@@ -1,0 +1,106 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the Smarter Sorting Customer Classification API
+  version: 1.0.0
+extends: ../openapi/smarter-sorting-customer-classification-v1-openapi.yml
+x-generated: '2026-08-28'
+x-method: generated
+x-source: >-
+  Generated from the verbatim provider spec fetched at
+  https://api.smartersorting.com/classification/v1/docs (HTTP 200, OpenAPI 3.1.0). This overlay
+  records API Evangelist observations ONLY; the original spec is never mutated. Every action below
+  adds documentation or a value confirmed live — none invents behaviour.
+actions:
+- target: $.info
+  description: Add contact, license-free terms pointer and provider identity absent from the spec.
+  update:
+    contact:
+      name: Smarter Sorting Support
+      url: https://support.smartersorting.com/s/
+    termsOfService: https://www.smartersorting.com/legal/terms-of-use
+    x-provider: Smarter Sorting (SmarterX)
+    x-developer-portal: https://api.smartersorting.com/docs
+    x-status-page: https://status.smartersorting.com/
+- target: $.servers
+  description: >-
+    Record the staging environment the developer guide documents and calls in its own curl example.
+    The published spec declares only the production server.
+  update:
+  - url: https://api.smartersorting.com
+    description: Production
+  - url: https://api.smarterx.com
+    description: >-
+      Production, SmarterX-branded alias. Confirmed live — serves the identical OpenAPI document
+      (HTTP 200) and the identical portal.
+  - url: https://api.staging.smarterx.com
+    description: >-
+      Staging. Documented in the developer guide; confirmed live (HTTP 200 on
+      /classification/v1/docs).
+- target: $.tags
+  description: The spec declares no top-level tags[] although its operations are tagged.
+  update:
+  - name: products
+    description: Submit product catalog entries and retrieve their regulatory classifications.
+  - name: docs
+    description: Self-describing contract endpoint.
+- target: $.paths['/classification/v1/products/:upc']
+  description: >-
+    OBSERVATION, not a rewrite. The path templating uses Express-style `:upc` rather than the
+    OpenAPI `{upc}` form. The parameter IS correctly declared as {name: upc, in: path, required:
+    true}, so tooling that validates path-template/parameter agreement will flag a mismatch and
+    some generators will emit a literal ":upc" segment. The live route accepts
+    /classification/v1/products/<upc>.
+  update:
+    x-api-evangelist-note: >-
+      Non-standard path templating — `:upc` should be `{upc}` per OpenAPI 3.1. Affects
+      getProductByFieldMatch, putProductAttributesByIdentifier and
+      patchProductAttributesByIdentifier.
+- target: $.paths['/classification/v1/docs'].get
+  description: >-
+    Flag that this operation is the API's own self-describing contract endpoint — the reason this
+    provider has a machine-readable contract at all, since no /openapi.json is served at the host
+    root. Worth surfacing: it is anonymous and needs no key.
+  update:
+    x-api-evangelist-note: >-
+      Anonymous, unauthenticated OpenAPI self-description. This is the canonical discovery URL for
+      this API: https://api.smartersorting.com/classification/v1/docs
+- target: $.components.securitySchemes.api_key
+  description: Document how the bearer token is obtained; the spec states only the mechanism.
+  update:
+    description: >-
+      HTTP bearer token. The key is generated for you when you sign in to the developer portal
+      (https://api.smartersorting.com/docs) or the staging portal
+      (https://api.staging.smarterx.com/docs) using Auth0 credentials. Send it as
+      `Authorization: Bearer <API key>`. No key prefix distinguishes staging from production keys.
+- target: $.components.schemas.ProblemDetails
+  description: >-
+    Record the two extension members the LIVE API returns beyond the RFC 9457 member set, observed
+    on unauthenticated 401 and 404 responses.
+  update:
+    x-api-evangelist-observed-extensions:
+      trace:
+        timestamp: ISO 8601 timestamp of the error.
+        requestId: Per-request UUID — the handle to quote to support.
+        buildId: UUID of the deployed API build.
+        rayId: Edge/CDN ray identifier.
+- target: $.components.schemas.ProductAttributeOrClassification
+  description: >-
+    Record that the ~69 regulatory attribute names are documented only through
+    components.examples.productExample and are not enumerable from the schema.
+  update:
+    x-api-evangelist-note: >-
+      `value` is an untyped bag. The regulatory attribute vocabulary (dot_*, iata_*, imdg_*, nfpa_*,
+      waste_rcra_codes, waste_state_codes, lithium/battery fields, flash_point, ph_min/ph_max,
+      sds_link, ifc_codes) appears only in components.examples.productExample. Enumerated and mapped
+      to its source standard in data-model/smarter-sorting-data-model.yml and
+      conformance/smarter-sorting-conformance.yml.
+- target: $.paths['/classification/v1/products/bulk'].post
+  description: >-
+    Record that the returned batchId is accepted by no published operation, and that there is no
+    reversal path for an uploaded batch.
+  update:
+    x-api-evangelist-note: >-
+      Returns BatchCreationResult {batchId}, but no operation in the published contract accepts a
+      batchId — the batch can neither be polled nor cancelled by that identifier. There is no
+      DELETE, cancel or undo on any path. See conventions/smarter-sorting-conventions.yml
+      (reversibility).

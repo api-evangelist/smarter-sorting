@@ -1,0 +1,28 @@
+generated: '2026-08-28'
+method: searched
+source: >-
+  https://api.smartersorting.com/docs/index.md, https://api.smartersorting.com/docs/getting-started.md,
+  probes of https://api.smartersorting.com/docs/webhooks (404), /asyncapi.yaml and /asyncapi.json on
+  the API host, and openapi/smarter-sorting-customer-classification-v1-openapi.yml (no webhooks
+  object, no callbacks on any operation).
+event_surface: none
+asyncapi_published: false
+webhooks_published: false
+note: >-
+  Smarter Sorting publishes NO event surface — no AsyncAPI document, no webhooks, no callbacks, no
+  server-sent events and no message queue. This is a notable gap rather than a neutral absence,
+  because the API is explicitly ASYNCHRONOUS: classification is queued, the guide tells callers to
+  "check in on our progress" and to wait at least 30 seconds per product, and the only completion
+  signal published is polling the `status` field until it reads CLASSIFICATION_COMPLETE. A provider
+  whose core workflow is submit-then-wait and who ships no callback is asking every consumer to
+  build a poller. The OpenAPI declares neither a `webhooks` object (available to it in 3.1.0) nor
+  an operation-level `callbacks` object.
+polling_alternative:
+  operations:
+  - getProductByFieldMatch
+  - getListOfProducts
+  - getCountOfProducts
+  incremental_idiom: >-
+    getListOfProducts with start_date set to the timestamp of the previous poll returns only
+    products updated since, so a consumer can avoid re-paging the whole catalog.
+  source: https://api.smartersorting.com/docs#paging-results-in-bulk

@@ -1,0 +1,51 @@
+generated: '2026-08-28'
+method: searched
+source: >-
+  https://api.smartersorting.com/docs/index.md (the "Setup" section) and
+  https://api.smartersorting.com/docs/getting-started.md.
+sandbox_published: true
+environments:
+- name: staging
+  base_url: https://api.staging.smarterx.com
+  portal: https://api.staging.smarterx.com/docs
+  probe_status: 200
+  spec: https://api.staging.smarterx.com/classification/v1/docs
+  spec_status: 200
+  description: >-
+    A publicly documented staging environment. The developer guide's own worked curl example calls
+    it: `curl -H "Authorization: Bearer YOUR_API_KEY"
+    'https://api.staging.smarterx.com/classification/v1/products?page_size=50'`, and the guide's
+    deep links into the API reference all point at the staging portal.
+- name: production
+  base_url: https://api.smartersorting.com
+  portal: https://api.smartersorting.com/docs
+  probe_status: 200
+key_model:
+  separate_test_keys: true
+  detail: >-
+    Keys are minted per portal. Signing in to the staging portal
+    (https://api.staging.smarterx.com/docs) with Auth0 credentials generates a staging key; signing
+    in to the production portal generates a production key. There is no documented key PREFIX
+    convention (no `test_`/`live_` discriminator), so a key alone does not tell a caller — or an
+    agent — which environment it addresses; only the host does.
+  key_prefix_convention: none
+test_fixtures:
+  published: false
+  detail: >-
+    No test UPCs, no fixture catalog, no seeded sample products and no triggers for forcing a
+    particular classification outcome are published. The getting-started page instead invites
+    open-ended experimentation ("Try different products and Decisions to understand how our instant
+    classifiers work with your inputs"), which means a caller cannot write a deterministic
+    integration test against a known-answer product.
+time_simulation:
+  published: false
+trial:
+  offered: true
+  detail: >-
+    The getting-started page offers a free trial and paid tiers ("Choose the tier that's right for
+    you — may we recommend the free trial?"), but its sign-up link targets a relative `~pricing`
+    route which returns HTTP 404 on the live portal — a broken link on the documented on-ramp.
+    See plans/smarter-sorting-plans-pricing.yml.
+note: >-
+  Verbatim from the provider. No test key, no test value and no fixture has been invented here;
+  where the provider publishes nothing, the field records that.

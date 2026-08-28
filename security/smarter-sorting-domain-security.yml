@@ -1,0 +1,24 @@
+generated: '2026-08-28'
+method: probed
+source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
+hosts:
+- host: www.smartersorting.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Oct 26 02:04:20 2026 GMT
+  hsts: true
+  hsts_max_age: 31536000
+- host: api.smartersorting.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Sep 29 21:15:19 2026 GMT
+  hsts: null
+domains:
+- domain: smartersorting.com
+  dnssec: true
+  caa:
+  - 0 issue "pki.goog"
+  - 0 issue "letsencrypt.org"
+  spf: true
+  dmarc: true
+  dmarc_policy: reject

@@ -1,0 +1,169 @@
+generated: '2026-08-28'
+method: derived
+source: >-
+  Derived from the components.schemas $ref graph and the documented attribute vocabulary in
+  openapi/smarter-sorting-customer-classification-v1-openapi.yml; attribute domains cross-checked
+  against https://api.smartersorting.com/docs/index.md.
+identifier_scheme:
+  primary_key: upc
+  detail: >-
+    UPC is the resource key of the whole API — the path parameter on read/PUT/PATCH and a required
+    CSV column on bulk upload. GTIN and EAN are documented as also acceptable in the same field.
+    There is no separate synthetic product id; `external_id` is a CALLER-owned identifier (SKU or
+    internal database id) carried alongside, not a Smarter Sorting id.
+  secondary:
+  - name: batchId
+    format: uuid
+    example: 8ec40e34-9f5f-478f-aefe-60f614d9be4c
+    note: >-
+      Returned by bulkUploadProducts but accepted by NO operation in the published contract — a
+      write-only identifier. See conventions reversibility.
+entities:
+- name: Product
+  schema: '#/components/schemas/Product'
+  description: >-
+    The central entity. Carries status, last_updated_date, upc, product_name, and two parallel
+    arrays of name/value pairs — `attributes` (what was submitted or enriched) and
+    `classifications` (what the model determined). additionalProperties is true.
+  fields:
+  - name: status
+    type: ProductStatus
+    ref: true
+  - name: last_updated_date
+    type: string
+    format: date
+  - name: upc
+    type: string
+  - name: product_name
+    type: string
+  - name: attributes
+    type: array
+    items: ProductAttributeOrClassification
+  - name: classifications
+    type: array
+    items: ProductAttributeOrClassification
+- name: ProductStatus
+  schema: '#/components/schemas/ProductStatus'
+  description: Enumeration of the asynchronous classification lifecycle.
+  enum:
+  - PENDING
+  - CLASSIFICATION_COMPLETE
+  - IN_REVIEW
+  note: >-
+    A spec/docs discrepancy worth flagging — the schema enum orders the values
+    PENDING/CLASSIFICATION_COMPLETE/IN_REVIEW while the developer guide describes the lifecycle as
+    PENDING then IN_REVIEW then CLASSIFICATION_COMPLETE. The value set is identical; only the
+    ordering differs.
+- name: ProductAttributeOrClassification
+  schema: '#/components/schemas/ProductAttributeOrClassification'
+  description: >-
+    A single name/value pair. `value` is typed `object` with the description "Can be of any type
+    (string, number, object, etc.)" — an untyped bag. This is the model's weakest point for an
+    agent: the ~69 regulatory attribute names are documented ONLY through
+    components.examples.productExample, never as a schema, so no generated client can validate
+    them and no consumer can enumerate the vocabulary from the contract alone.
+- name: ProductResponse
+  schema: '#/components/schemas/ProductResponse'
+  description: Paginated envelope — pagination {total, next_page_token, page_size} plus products[].
+- name: ProductCountResponse
+  schema: '#/components/schemas/ProductCountResponse'
+  description: Count of products matching the supplied filters.
+- name: ProductCSVBatch
+  schema: '#/components/schemas/ProductCSVBatch'
+  description: The text/csv request body accepted by bulkUploadProducts.
+- name: BatchCreationResult
+  schema: '#/components/schemas/BatchCreationResult'
+  description: 'Synthetic identifier for an uploaded batch: {batchId}.'
+- name: ProblemDetails
+  schema: '#/components/schemas/ProblemDetails'
+  description: RFC 9457/7807 error document. See errors/smarter-sorting-problem-types.yml.
+relationships:
+- from: Product
+  to: ProductStatus
+  type: has_one
+  via: status
+  binding: $ref
+- from: Product
+  to: ProductAttributeOrClassification
+  type: has_many
+  via: attributes
+  binding: $ref
+- from: Product
+  to: ProductAttributeOrClassification
+  type: has_many
+  via: classifications
+  binding: $ref
+- from: ProductResponse
+  to: Product
+  type: has_many
+  via: products
+  binding: $ref
+- from: ProductCSVBatch
+  to: BatchCreationResult
+  type: has_one
+  via: batchId
+  binding: operation-result
+  note: bulkUploadProducts consumes ProductCSVBatch and returns BatchCreationResult (HTTP 202).
+attribute_domains:
+  note: >-
+    The name/value pairs are untyped in the schema but fall into stable regulatory domains,
+    enumerated here from components.examples.productExample so a consumer can reason about them.
+    See conformance/smarter-sorting-conformance.yml for the standard each domain implements.
+  domains:
+  - domain: transport-dot
+    prefix: dot_
+    count: 11
+    standard: dot-49-cfr
+  - domain: transport-air
+    prefix: iata_
+    count: 10
+    standard: iata-dgr
+  - domain: transport-sea
+    prefix: imdg_
+    count: 11
+    standard: imdg-code
+  - domain: fire-hazard
+    prefix: nfpa_
+    count: 4
+    standard: nfpa-704
+  - domain: hazardous-waste
+    fields:
+    - waste_rcra_codes
+    - waste_state_codes
+    standard: rcra-40-cfr
+  - domain: battery
+    fields:
+    - battery_chemistry
+    - battery_configuration
+    - batt_cell_or_button_cell
+    - battery_used_for_running_equipment
+    - contains_battery
+    - product_itself_battery
+    - lithium_metal_weight
+    - lithium_metal_weight_uom
+    - lithium_watt_hrs
+    - total_number_of_batt_or_cells
+    - weight_of_all_batts
+    - weight_of_all_batts_uom
+    - un38.3_document_link
+    standard: un-38-3
+  - domain: physical-properties
+    fields:
+    - flash_point
+    - flash_point_uom
+    - ph_min
+    - ph_max
+    - size_uom
+    - upc_size
+    - form
+    - is_multi_component
+    - scopes
+    standard: ghs-sds
+  - domain: documents
+    fields:
+    - sds_link
+    standard: ghs-sds
+  - domain: fire-code
+    fields:
+    - ifc_codes
+    standard: international-fire-code

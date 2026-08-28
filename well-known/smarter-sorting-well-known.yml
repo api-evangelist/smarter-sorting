@@ -1,0 +1,99 @@
+generated: '2026-08-28'
+method: probed
+source: >-
+  Anonymous HTTPS probes of the /.well-known/ discovery surface on every host named in apis.yml
+  baseURL, the OpenAPI servers[] block, and the docs/portal/data hosts.
+note: >-
+  Smarter Sorting serves no /.well-known/ discovery documents. The API host (api.smartersorting.com)
+  and its SmarterX alias answer every /.well-known/ path with an RFC 9457 application/problem+json
+  404 — a clean, well-behaved negative. portal.smartersorting.com is a single-page application whose
+  catch-all route answers HTTP 200 with the same 64,576-byte HTML shell for EVERY /.well-known/ path
+  probed, including agent-card.json; that is an SPA false positive, NOT a served document, and it is
+  recorded as a miss. No WellKnown, SecurityTxt or AgentCard pointer is emitted, because no path
+  returned a real document.
+hosts:
+- host: api.smartersorting.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: api.smarterx.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: www.smartersorting.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: portal.smartersorting.com
+  note: >-
+    SPA catch-all — every path returns HTTP 200 with an identical 64,576-byte text/html shell.
+    Treated as absent; no document is served.
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    content_type: text/html
+    served: false
+  - path: /.well-known/api-catalog
+    status: 200
+    content_type: text/html
+    served: false
+  - path: /.well-known/agent-card.json
+    status: 200
+    content_type: text/html
+    served: false
+  - path: /.well-known/agent.json
+    status: 200
+    content_type: text/html
+    served: false
+- host: data.smartersorting.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404

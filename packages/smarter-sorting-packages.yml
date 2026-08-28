@@ -1,0 +1,34 @@
+generated: '2026-08-28'
+method: searched
+source: >-
+  npm registry search (registry.npmjs.org/-/v1/search) for "smartersorting" and "smarterx";
+  pypi.org/pypi/{smartersorting,smarterx}/json; GitHub org lookup for github.com/smartersorting and
+  github.com/smarterx; the Smarter Sorting developer portal at https://api.smartersorting.com/docs.
+package_count: 0
+packages: []
+note: >-
+  Smarter Sorting publishes no first-party client libraries. npm registry search returns 0 objects
+  for both "smartersorting" and "smarterx"; PyPI returns 404 Not Found for both names; no GitHub
+  organization exists at github.com/smartersorting or github.com/smarterx (both 404 from the GitHub
+  API). The developer portal documents the API with raw curl examples only and links to no SDK,
+  no source repository and no package of any kind. This is a checked zero, not an unchecked gap —
+  every registry named above answered. No SDKs pointer is emitted.
+registries_checked:
+- registry: npm
+  query: smartersorting
+  result: 0 packages
+- registry: npm
+  query: smarterx
+  result: 0 packages
+- registry: pypi
+  query: smartersorting
+  result: 404 Not Found
+- registry: pypi
+  query: smarterx
+  result: 404 Not Found
+- registry: github
+  query: orgs/smartersorting
+  result: 404 Not Found
+- registry: github
+  query: orgs/smarterx
+  result: 404 Not Found

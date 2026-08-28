@@ -1,0 +1,154 @@
+generated: '2026-08-28'
+method: searched
+source: >-
+  https://api.smartersorting.com/docs/index.md (the developer guide, markdown twin, HTTP 200),
+  https://api.smartersorting.com/docs/getting-started.md (HTTP 200), and
+  openapi/smarter-sorting-customer-classification-v1-openapi.yml.
+authentication:
+  style: http-bearer
+  header: Authorization
+  value_format: 'Bearer <API key>'
+  issuance: >-
+    The key is generated for you when you sign in to the developer portal
+    (https://api.smartersorting.com/docs, or the staging portal at
+    https://api.staging.smarterx.com/docs) with Auth0 credentials.
+  note: >-
+    Unusually, the spec ALSO declares Authorization as an explicit required header parameter on
+    every business operation, in addition to the securityScheme. That is redundant in OpenAPI 3.1
+    and causes generators to emit the header twice; captured as a deviation in
+    overlays/smarter-sorting-customer-classification-v1-overlay.yaml.
+  docs: https://api.smartersorting.com/docs#setup
+pagination:
+  style: opaque-cursor
+  request_params:
+  - name: page_size
+    in: query
+    default: 50
+    minimum: 1
+    maximum: 100
+  - name: page_token
+    in: query
+    description: Token returned by the previous response; omit to start from the beginning.
+  response_fields:
+  - pagination.total
+  - pagination.next_page_token
+  - pagination.page_size
+  applies_to:
+  - getListOfProducts
+  docs: https://api.smartersorting.com/docs#paging-results-in-bulk
+filtering:
+  params:
+  - name: statuses
+    description: 'Filter by classification status: PENDING, IN_REVIEW, CLASSIFICATION_COMPLETE.'
+  - name: start_date
+    description: >-
+      Only return products updated on or after this date. The guide recommends this as the
+      incremental-polling idiom — poll with start_date set to the last check rather than re-paging
+      the whole catalog.
+  - name: end_date
+  applies_to:
+  - getListOfProducts
+  - getCountOfProducts
+async_model:
+  style: submit-then-poll
+  description: >-
+    Classification is asynchronous. Products are submitted individually (PUT/PATCH by UPC) or as a
+    text/csv batch (POST /classification/v1/products/bulk, HTTP 202 with a batchId), then the
+    caller polls the product's `status` field until it reads CLASSIFICATION_COMPLETE. There is no
+    webhook, no callback and no event stream — polling is the only completion signal.
+  statuses:
+  - value: PENDING
+    meaning: Received and enqueued for regulatory evaluation.
+  - value: IN_REVIEW
+    meaning: Under evaluation.
+  - value: CLASSIFICATION_COMPLETE
+    meaning: Results available.
+  guidance: >-
+    The getting-started page advises waiting at least 30 seconds per product per request, and notes
+    that Decisions relying on an LLM vary in processing time.
+metadata:
+  external_id: >-
+    A caller-supplied identifier (SKU or internal database id) accepted on upload and returned on
+    read, usable for search and filtering. This is the correlation handle between the caller's
+    catalog and Smarter Sorting's.
+  additional_properties: >-
+    The Product schema sets additionalProperties true — submitted attributes not in the documented
+    list are accepted and echoed back.
+request_id_tracing:
+  supported: true
+  mechanism: >-
+    Error responses carry a trace object with requestId, buildId, rayId and timestamp. Note this is
+    RESPONSE-ONLY and error-only: there is no documented request-id request header a caller can set,
+    and successful responses carry no trace block, so a caller cannot correlate a successful call.
+versioning:
+  style: uri-path
+  current: v1
+  evidence: All business paths are prefixed /classification/v1/; info.version is 1.0.0.
+  policy_published: false
+  note: >-
+    No versioning policy, no deprecation policy, no Sunset or Deprecation headers and no version
+    negotiation header are documented anywhere in the portal.
+error_envelope:
+  format: rfc9457
+  media_type: application/problem+json
+  see: errors/smarter-sorting-problem-types.yml
+rate_limit_signaling:
+  documented: false
+  headers: []
+  see: rate-limits/smarter-sorting-rate-limits.yml
+field_expansion:
+  supported: false
+  note: No expand/fields/sparse-fieldset parameter is declared or documented.
+idempotency:
+  supported: false
+  grade: na-partial
+  detail: >-
+    No Idempotency-Key header is declared on any operation and none is documented.
+    putProductAttributesByIdentifier is idempotent by HTTP semantics — a full replace keyed on the
+    UPC in the path — so re-sending it is safe. bulkUploadProducts is a POST that mints a new
+    batchId on every call and has no replay protection, so a retried CSV upload after a timeout
+    cannot be de-duplicated by the caller.
+dry_run_mode:
+  supported: false
+  detail: >-
+    No dry-run, preview, validate-only or simulate parameter exists on any write operation. A
+    caller cannot rehearse an upload; the only way to find out whether a CSV parses is to submit it.
+reversibility:
+  grade: none
+  write_surface: true
+  detail: >-
+    The API has a real write surface — PUT and PATCH product attributes by UPC, and a bulk CSV
+    upload — and publishes NO reversal operation of any kind. There is no DELETE on any path, no
+    cancel, no void, no undo, no rollback, no restore, and no batch-cancel or batch-delete keyed on
+    the batchId returned by POST /classification/v1/products/bulk. Nothing in the developer guide
+    or the getting-started page states a correction window. This is not an omission in our reading:
+    the published spec declares nine operations total and none of them removes or reverses data.
+  write_operations:
+  - operationId: putProductAttributesByIdentifier
+    method: PUT
+    path: /classification/v1/products/{upc}
+    reversal: none
+    window: null
+    note: >-
+      Full replace keyed on UPC. The practical (undocumented) compensating action is to PUT the
+      prior attribute set again, which requires the caller to have retained it — the API offers no
+      version history to read it back from. Not a published reversal.
+  - operationId: patchProductAttributesByIdentifier
+    method: PATCH
+    path: /classification/v1/products/{upc}
+    reversal: none
+    window: null
+    note: Same as above; a compensating PATCH is caller-reconstructed, not provider-published.
+  - operationId: bulkUploadProducts
+    method: POST
+    path: /classification/v1/products/bulk
+    reversal: none
+    window: null
+    note: >-
+      Returns a batchId (BatchCreationResult) but publishes no operation that accepts a batchId —
+      the identifier can be neither queried nor cancelled through the public contract. A CSV
+      uploaded in error cannot be withdrawn via the API.
+  remediation_path: >-
+    Corrections appear to be a support matter: https://support.smartersorting.com/s/. No SLA or
+    window for that route is published.
+  no_invented_window: true

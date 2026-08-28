@@ -1,0 +1,46 @@
+generated: '2026-08-28'
+method: searched
+source: >-
+  https://api.smartersorting.com/docs/index.md, https://api.smartersorting.com/docs/getting-started.md,
+  probes of https://api.smartersorting.com/docs/rate-limits (404), and
+  openapi/smarter-sorting-customer-classification-v1-openapi.yml.
+limit_count: 0
+limits: []
+response_headers: []
+exhaustion_status: null
+note: >-
+  Smarter Sorting publishes NO rate limits. There is no rate-limit or throttling section in the
+  developer portal (/docs/rate-limits returns 404), the words "rate limit", "throttle", "quota",
+  "429" and "Retry-After" appear nowhere in the developer guide, no X-RateLimit-*, RateLimit-* or
+  Retry-After response header is declared or documented, and no operation in the spec declares a
+  429 response. An agent has no runtime signal to back off on and no documented number to design
+  against. This is a checked zero: the docs are public and readable, and they say nothing.
+documented_ceilings:
+  note: >-
+    Two hard ceilings ARE published, but they are payload/shape limits rather than rate limits, so
+    they are recorded here separately rather than as limits[].
+  ceilings:
+  - name: page_size
+    value: 100
+    scope: per-request
+    source: >-
+      openapi getListOfProducts page_size parameter — integer, default 50, minimum 1, maximum 100.
+  - name: products_per_job
+    value: 5
+    scope: per-job
+    source: >-
+      https://api.smartersorting.com/docs/getting-started.md — "The maximum number of products per
+      job is 5."
+  - name: recommended_poll_interval
+    value: 30 seconds per product per request
+    scope: client guidance
+    source: >-
+      https://api.smartersorting.com/docs/getting-started.md — "We recommend waiting at least 30
+      seconds per product in your request."
+consumption_model:
+  unit: credits
+  formula: credits_used = decision_count * product_count
+  source: https://api.smartersorting.com/docs/getting-started.md
+  note: >-
+    Credit consumption is documented as a formula but no credit ALLOWANCE per tier is published,
+    so the formula cannot be turned into a budget.

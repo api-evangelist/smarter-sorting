@@ -1,0 +1,41 @@
+generated: '2026-08-28'
+method: searched
+source: >-
+  https://api.smartersorting.com/docs/getting-started.md (HTTP 200); probes of
+  https://api.smartersorting.com/docs/~pricing (404), /docs/pricing (404) and
+  https://www.smartersorting.com/pricing (404); the Google Cloud Marketplace listing at
+  https://console.cloud.google.com/marketplace/product/ss-gcp-marketplace/smarter-1 linked from the
+  Smarter Sorting homepage.
+plan_count: 0
+plans: []
+pricing_published: false
+note: >-
+  Smarter Sorting confirms that priced tiers EXIST but publishes no tier names, no prices and no
+  included quotas on any public page. The getting-started page says "Choose the tier that's right
+  for you — may we recommend the free trial?" and links the words "signing up" to a relative
+  `~pricing` route inside the developer portal, which returns HTTP 404 live — the documented
+  pricing on-ramp is a broken link. www.smartersorting.com has no /pricing page (404) and its
+  navigation carries none. The only purchasable surface found is a Google Cloud Marketplace listing
+  for "smarter-1" (project ss-gcp-marketplace), whose pricing is rendered only inside the
+  authenticated Google Cloud console, so no figure could be read anonymously. plan_count is
+  therefore an honest 0: not "no plans exist", but "no plan is published where a buyer or an agent
+  can read it".
+signals_found:
+- signal: free trial offered
+  source: https://api.smartersorting.com/docs/getting-started.md
+- signal: multiple paid tiers referenced
+  source: https://api.smartersorting.com/docs/getting-started.md
+- signal: 'metered in credits; credits_used = decision_count * product_count'
+  source: https://api.smartersorting.com/docs/getting-started.md
+- signal: Google Cloud Marketplace listing (console-gated pricing)
+  source: https://console.cloud.google.com/marketplace/product/ss-gcp-marketplace/smarter-1
+probes:
+- url: https://api.smartersorting.com/docs/~pricing
+  status: 404
+- url: https://api.smartersorting.com/docs/pricing
+  status: 404
+- url: https://www.smartersorting.com/pricing
+  status: 404
+- url: https://console.cloud.google.com/marketplace/product/ss-gcp-marketplace/smarter-1
+  status: 200
+  note: Google Cloud console shell; pricing renders only for an authenticated console session.

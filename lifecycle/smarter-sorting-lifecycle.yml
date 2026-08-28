@@ -1,0 +1,78 @@
+generated: '2026-08-28'
+method: searched
+source: >-
+  https://api.smartersorting.com/docs/index.md, https://api.smartersorting.com/docs/getting-started.md,
+  https://status.smartersorting.com/api/v2/summary.json (HTTP 200), and
+  openapi/smarter-sorting-customer-classification-v1-openapi.yml.
+versioning:
+  scheme: uri-path
+  current_version: v1
+  spec_version: 1.0.0
+  policy_published: false
+  policy_url: null
+deprecation:
+  policy_published: false
+  sunset_header: false
+  deprecation_header: false
+  deprecated_operations: []
+  note: >-
+    No operation in the published spec carries `deprecated: true`, and no deprecation or sunset
+    policy is published. RFC 8594 Sunset/Deprecation headers are not documented. There is no
+    changelog and no release-notes page in the developer portal, so a consumer has no published
+    means of learning that a field or operation has changed.
+sla:
+  published: false
+  note: No public SLA, uptime commitment or support-response target was found.
+status_page:
+  url: https://status.smartersorting.com/
+  status: 200
+  provider: Atlassian Statuspage
+  api:
+    summary: https://status.smartersorting.com/api/v2/summary.json
+    status: https://status.smartersorting.com/api/v2/status.json
+    machine_readable: true
+  components:
+  - group: BOSS Platform
+    items:
+    - BOSS API (Backend API for Back Of Store System)
+    - Product Intelligence Platform UI
+  - group: Smarter-1 API
+    items:
+    - Classification Jobs API
+    - Developer Portal
+  - group: Google Cloud Platform
+    items:
+    - Google Kubernetes Engine
+    - Google Cloud SQL
+    - Google Cloud Storage
+    - Google Cloud Networking
+    - Google Cloud DNS
+  - group: Standalone
+    items:
+    - data.smartersorting.com
+  note: >-
+    A genuinely good signal: the status page is machine-readable via the Statuspage v2 API, breaks
+    the API out from the UI, and names its upstream Google Cloud dependencies as tracked components
+    rather than hiding them.
+environments:
+- name: production
+  base_url: https://api.smartersorting.com
+  portal: https://api.smartersorting.com/docs
+- name: staging
+  base_url: https://api.staging.smarterx.com
+  portal: https://api.staging.smarterx.com/docs
+  note: >-
+    Publicly documented in the developer guide and serving the same OpenAPI document
+    (https://api.staging.smarterx.com/classification/v1/docs, HTTP 200, 47,585 bytes).
+brand_history:
+- date: '2023-02'
+  event: >-
+    Smarter Sorting rebranded as SmarterX. smarterx.com and www.smarterx.com both 301 to
+    www.smartersorting.com, and api.smarterx.com serves the identical Customer Classification API
+    and developer portal as api.smartersorting.com — the two names are one company and one surface.
+    The developer guide's own examples use api.smarterx.com and api.staging.smarterx.com while the
+    spec's servers[] block names api.smartersorting.com.
+- date: '2024'
+  event: >-
+    SmarterX operates as part of Syndigo (https://syndigo.com/smarter-x/, HTTP 200). The
+    smartersorting.com developer surface remains independently published and live.

@@ -1,0 +1,81 @@
+generated: '2026-08-28'
+method: derived
+source: >-
+  Derived from the 4xx responses declared in
+  openapi/smarter-sorting-customer-classification-v1-openapi.yml, and from live unauthenticated
+  error bodies observed at https://api.smartersorting.com/openapi.json (404) and
+  https://api.smartersorting.com/classification/v1/products (401).
+format: rfc9457
+envelope: ProblemDetails
+media_type: application/problem+json
+note: >-
+  The API returns RFC 9457 (formerly RFC 7807) problem documents. The spec declares a
+  ProblemDetails schema whose description reads "Problem Details object as per RFC 7807" with
+  type/title/status/detail/instance members, and the LIVE edge confirms it: unauthenticated and
+  unknown-path requests both return Content-Type application/problem+json. Live bodies carry two
+  members beyond the RFC: a `trace` object (timestamp, requestId, buildId, rayId) which is the
+  request-tracing handle for support, and a `type` URI resolving to httpproblems.com rather than a
+  provider-owned registry. Note a spec/runtime gap: only the two collection operations
+  (getCountOfProducts, getListOfProducts) declare application/json content for their 400; the
+  per-UPC and bulk operations declare 400/404 with a description but NO response content schema,
+  even though the edge does return a problem document.
+extensions:
+- name: trace.timestamp
+  description: ISO 8601 timestamp the error was generated.
+- name: trace.requestId
+  description: Per-request UUID; the handle to quote to support.
+- name: trace.buildId
+  description: UUID of the deployed API build that produced the error.
+- name: trace.rayId
+  description: Edge/CDN ray identifier.
+problem_types:
+- type: https://httpproblems.com/http-status/401
+  status: 401
+  title: Unauthorized
+  detail_example: No Authorization Header
+  observed: live
+  operations:
+  - getProductByFieldMatch
+  - getListOfProducts
+  - getCountOfProducts
+  - putProductAttributesByIdentifier
+  - patchProductAttributesByIdentifier
+  - bulkUploadProducts
+  remediation: >-
+    Send an Authorization header of the form `Bearer <API key>`; the key is generated for you when
+    you sign in to the developer portal with Auth0 credentials.
+- type: https://httpproblems.com/http-status/404
+  status: 404
+  title: Not Found
+  observed: live
+  spec_declared: true
+  operations:
+  - getProductByFieldMatch
+  - putProductAttributesByIdentifier
+  - patchProductAttributesByIdentifier
+  remediation: >-
+    The UPC is not present in your catalog. Upload it first with PUT
+    /classification/v1/products/{upc} or via the bulk CSV endpoint.
+- status: 400
+  title: Bad Request
+  spec_declared: true
+  schema: ProblemDetails
+  operations:
+  - getCountOfProducts
+  - getListOfProducts
+  remediation: Check filter values — statuses, start_date, end_date, page_size (1-100) and page_token.
+- status: 400
+  title: Bad request, must provide valid UPC.
+  spec_declared: true
+  content_declared: false
+  operations:
+  - getProductByFieldMatch
+  remediation: Supply a valid UPC (GTIN or EAN are also accepted) in the path.
+- status: 400
+  title: Invalid file format
+  spec_declared: true
+  content_declared: false
+  operations:
+  - bulkUploadProducts
+  remediation: >-
+    Submit the batch as text/csv with `upc` and `name` columns present for every row.

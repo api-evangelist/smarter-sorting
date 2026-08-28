@@ -1,0 +1,168 @@
+generated: '2026-08-28'
+method: derived
+source: >-
+  Derived from openapi/smarter-sorting-customer-classification-v1-openapi.yml and from live
+  unauthenticated responses at https://api.smartersorting.com; cross-checked against the developer
+  guide at https://api.smartersorting.com/docs/index.md and the security & AI governance page at
+  https://www.smartersorting.com/security-ai-governance.
+conformance:
+- id: rfc9457
+  label: RFC 9457 / RFC 7807 Problem Details for HTTP APIs
+  conforms: true
+  evidence: >-
+    components.schemas.ProblemDetails is declared with the description "Problem Details object as
+    per RFC 7807" and the full member set type/title/status/detail/instance, and is referenced by
+    the 400 responses of getCountOfProducts and getListOfProducts. CONFIRMED LIVE, not merely
+    declared: GET https://api.smartersorting.com/classification/v1/products with no credentials
+    returns HTTP 401 with Content-Type application/problem+json and the body
+    {"type":"https://httpproblems.com/http-status/401","title":"Unauthorized","status":401,
+    "detail":"No Authorization Header","instance":"/classification/v1/products", ...}.
+  caveat: >-
+    The problem `type` URI resolves to the third-party httpproblems.com registry rather than a
+    provider-owned type registry, so the type URI is not a Smarter Sorting-documented problem
+    vocabulary. Four of the seven declared 4xx responses carry no response content schema.
+- id: http-bearer-auth
+  label: RFC 6750 Bearer Token Usage
+  conforms: true
+  evidence: >-
+    components.securitySchemes.api_key is {type: http, scheme: bearer}, applied per-operation via
+    security [{api_key: []}]. The guide states the token is issued by the developer portal via
+    Auth0 sign-in and is sent as `Authorization: Bearer YOUR_API_KEY`.
+- id: oauth2
+  label: OAuth 2.0 authorization flows exposed to API callers
+  conforms: false
+  evidence: >-
+    No oauth2 or openIdConnect securityScheme is declared, and no OAuth metadata is served:
+    /.well-known/oauth-authorization-server and /.well-known/oauth-protected-resource both return
+    404 on api.smartersorting.com. Auth0 is used for HUMAN sign-in to the developer portal, which
+    then mints a static bearer key; API callers do not perform an OAuth flow.
+- id: oidc
+  label: OpenID Connect Discovery
+  conforms: false
+  evidence: /.well-known/openid-configuration returns HTTP 404 on every probed host.
+- id: pagination
+  label: Cursor/token pagination
+  conforms: true
+  evidence: >-
+    getListOfProducts declares page_size (integer, default 50, minimum 1, maximum 100) and
+    page_token query parameters; ProductResponse.pagination declares total, next_page_token and
+    page_size. Opaque-token pagination, documented in the guide under "Paging results in bulk".
+- id: idempotency
+  label: Idempotency keys on unsafe operations
+  conforms: false
+  evidence: >-
+    No Idempotency-Key header is declared on any operation and none is documented. The PUT
+    operation putProductAttributesByIdentifier is naturally idempotent by HTTP semantics (full
+    replace keyed on the UPC in the path), but bulkUploadProducts is a POST that mints a new
+    batchId per call with no replay protection.
+- id: json-api
+  label: JSON:API
+  conforms: false
+  evidence: Responses are plain application/json objects; no JSON:API media type or envelope.
+- id: odata
+  label: OData
+  conforms: false
+  evidence: No $metadata surface and no OData query options.
+- id: scim
+  label: SCIM
+  conforms: false
+  evidence: No SCIM schema URNs; the API has no identity or provisioning surface.
+- id: soc2-type-ii
+  label: SOC 2 Type II
+  conforms: true
+  method: searched
+  evidence: >-
+    https://www.smartersorting.com/security-ai-governance (HTTP 200) states Smarter Sorting is
+    SOC 2 Type II attested. Company-level attestation, not an API contract property.
+- id: ccpa
+  label: CCPA
+  conforms: true
+  method: searched
+  evidence: >-
+    https://www.smartersorting.com/security-ai-governance (HTTP 200) states CCPA compliance, and
+    records GDPR and HIPAA as not applicable on the stated basis that the platform processes no EU
+    citizen data and no PHI.
+domain_standards:
+  note: >-
+    Smarter Sorting's market — retail hazardous-materials classification and product stewardship —
+    has no API interoperability standard in the SCIM/OData/OpenRTB sense. What its contract DOES
+    carry, and carries in the contract rather than in marketing copy, is the regulatory
+    classification vocabulary of the dangerous-goods and hazardous-waste regimes: the response
+    attribute names in components.examples.productExample and the Product schema are the field
+    names of DOT 49 CFR, the IATA Dangerous Goods Regulations, the IMDG Code, the UN Model
+    Regulations, NFPA 704, RCRA 40 CFR and UN 38.3. A consignor or waste broker who already speaks
+    those regimes can consume this API with no translation layer; that is exactly the property the
+    domain-standard check exists to reward. Recorded with evidence; asserted only where a named
+    field in the published contract proves it.
+  standards:
+  - id: un-model-regulations
+    label: UN Recommendations on the Transport of Dangerous Goods (UN numbers)
+    conforms: true
+    evidence: >-
+      components.examples.productExample declares dot_un_number, iata_un_number and imdg_un_number,
+      exemplified as "UN1266" (Perfumery products) — the UN Model Regulations dangerous-goods
+      identifier scheme.
+  - id: dot-49-cfr
+    label: US DOT Hazardous Materials Regulations (49 CFR)
+    conforms: true
+    evidence: >-
+      components.examples.productExample declares the full DOT descriptor set:
+      dot_basic_description, dot_hazard_class, dot_packing_group, dot_proper_shipping_name,
+      dot_sub_hazard_class, dot_technical_name, dot_un_number, dot_limited_quantity,
+      dot_exception_codes, dot_special_permit, dot_least_burden.
+  - id: iata-dgr
+    label: IATA Dangerous Goods Regulations (air transport)
+    conforms: true
+    evidence: >-
+      components.examples.productExample declares iata_basic_description, iata_hazard_class,
+      iata_packing_group, iata_proper_shipping_name, iata_sub_hazard_class, iata_technical_name,
+      iata_un_number, iata_limited_quantity, iata_exception_codes, iata_least_burden.
+  - id: imdg-code
+    label: IMO International Maritime Dangerous Goods Code (sea transport)
+    conforms: true
+    evidence: >-
+      components.examples.productExample declares imdg_basic_description, imdg_hazard_class,
+      imdg_packing_group, imdg_proper_shipping_name, imdg_sub_hazard_class, imdg_technical_name,
+      imdg_un_number, imdg_limited_quantity, imdg_exception_codes, imdg_least_burden and
+      imdg_marine_pollutant (an IMDG-specific determination).
+  - id: rcra-40-cfr
+    label: US EPA Resource Conservation and Recovery Act hazardous-waste codes
+    conforms: true
+    evidence: >-
+      components.examples.productExample declares waste_rcra_codes, exemplified as "D001" (the RCRA
+      ignitability characteristic code), alongside waste_state_codes exemplified as
+      "CA 331, WA WT02" (California and Washington state waste codes). The developer guide names
+      the RCRA Decision explicitly.
+  - id: nfpa-704
+    label: NFPA 704 Standard System for the Identification of the Hazards of Materials
+    conforms: true
+    evidence: >-
+      components.examples.productExample declares the complete NFPA 704 fire-diamond quartet:
+      nfpa_health, nfpa_flammability, nfpa_reactivity and nfpa_special.
+  - id: un-38-3
+    label: UN Manual of Tests and Criteria section 38.3 (lithium battery transport testing)
+    conforms: true
+    evidence: >-
+      The documented request attribute `un38` accepts a URL for the UN38.3 testing report, and
+      components.examples.productExample returns `un38.3_document_link`, alongside the lithium
+      transport attribute set lithium_metal_weight, lithium_watt_hrs, batt_cell_or_button_cell,
+      battery_chemistry, battery_configuration, total_number_of_batt_or_cells.
+  - id: gs1-gtin
+    label: GS1 GTIN / UPC / EAN product identifier scheme
+    conforms: true
+    evidence: >-
+      UPC is the primary resource key of the API — the path parameter of
+      getProductByFieldMatch/putProductAttributesByIdentifier/patchProductAttributesByIdentifier
+      and a required CSV column for bulkUploadProducts. The guide states "GTIN and EAN are also
+      acceptable", i.e. the GS1 identifier family is the addressing scheme.
+  - id: ghs-sds
+    label: GHS / OSHA Hazard Communication Safety Data Sheets
+    conforms: true
+    evidence: >-
+      The documented request attribute `sds` accepts a Safety Data Sheet URL, and
+      components.examples.productExample returns sds_link plus the SDS-derived physical properties
+      flash_point, flash_point_uom, ph_min and ph_max.
+  - id: international-fire-code
+    label: International Fire Code hazardous-material storage classification
+    conforms: true
+    evidence: components.examples.productExample declares ifc_codes.

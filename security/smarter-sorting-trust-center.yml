@@ -1,0 +1,42 @@
+generated: '2026-08-28'
+method: searched
+source: https://www.smartersorting.com/security-ai-governance
+trust_center_url: https://www.smartersorting.com/security-ai-governance
+status: 200
+type: security-and-ai-governance-page
+note: >-
+  Not a hosted trust center (no Vanta/Drata/SafeBase portal, no document request flow) but a
+  first-party security and AI-governance page that names a certification and a security contact
+  outright. probe-security-programs.py reported trust=none because no recognised trust-center
+  platform is in use; this artifact records what the provider actually publishes.
+certifications:
+- name: SOC 2 Type II
+  status: attested
+  evidence: Named on https://www.smartersorting.com/security-ai-governance
+compliance:
+- name: CCPA
+  status: compliant
+  evidence: Named on https://www.smartersorting.com/security-ai-governance
+- name: GDPR
+  status: not-applicable
+  evidence: >-
+    The page states GDPR is not applicable on the stated basis that the platform does not process
+    EU citizen data.
+- name: HIPAA
+  status: not-applicable
+  evidence: >-
+    The page states HIPAA is not applicable on the stated basis that the platform does not process
+    PHI.
+ai_governance:
+  published: true
+  url: https://www.smartersorting.com/security-ai-governance
+  commitments:
+  - No personal data (PII) is processed on the Smarter-1 platform.
+  - '"Closed-Loop AI" — customer proprietary data is excluded from public AI models.'
+  - Training datasets are validated by human experts.
+  - Safeguards against bias and hallucination via disagreement detection and consensus rules.
+  - Customer data ownership retained; outputs shared only with the respective customer.
+  note: >-
+    Worth recording as a distinct signal: an explicit, first-party AI-governance statement is rare
+    in this catalog, and for a provider whose product IS a model output feeding regulatory
+    decisions it is the disclosure that matters most.

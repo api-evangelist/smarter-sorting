@@ -1,0 +1,27 @@
+generated: '2026-08-28'
+method: generated
+source: >-
+  Generated from openapi/smarter-sorting-customer-classification-v1-openapi.yml and the developer
+  guide at https://api.smartersorting.com/docs. Smarter Sorting publishes no AGENTS.md and no
+  skills of its own (probed; none found). Every operationId referenced exists in the published spec.
+api: smarter-sorting-customer-classification-api
+skills:
+- name: smarter-sorting-classify-product-catalog
+  file: smarter-sorting-classify-product-catalog.md
+  description: >-
+    Bulk-upload a product catalog as CSV, poll for asynchronous classification, and page the
+    regulatory results.
+  operations:
+  - bulkUploadProducts
+  - getListOfProducts
+  - getCountOfProducts
+  - getProductByFieldMatch
+- name: smarter-sorting-update-product-attributes
+  file: smarter-sorting-update-product-attributes.md
+  description: >-
+    Create, replace or partially update one product's attributes by UPC to trigger or refine its
+    classification.
+  operations:
+  - putProductAttributesByIdentifier
+  - patchProductAttributesByIdentifier
+  - getProductByFieldMatch

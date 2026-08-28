@@ -1,0 +1,57 @@
+generated: '2026-08-28'
+method: derived
+source: >-
+  Derived from openapi/smarter-sorting-customer-classification-v1-openapi.yml after searching for a
+  published server: POST tools/list against https://api.smartersorting.com/mcp and
+  https://api.smarterx.com/mcp both returned RFC 9457 404s; mcp.smartersorting.com and
+  mcp.smarterx.com do not resolve (curl exit 6, no DNS); no MCP server is mentioned anywhere in the
+  developer portal, and no npm or PyPI package exists under either brand name.
+status: candidate
+deployment:
+  mode: none
+  auth: unknown
+  verified: probed
+note: >-
+  Smarter Sorting ships NO MCP server — neither a remote endpoint nor a local stdio package. The
+  tools below are a DERIVED candidate surface computed from the public Customer Classification API
+  operations; they are a proposal, not something an agent can call today. Every tool inherits its
+  input schema from the backing OpenAPI operation named in rest[]. Authentication would be the same
+  HTTP bearer token the REST API uses (issued from the developer portal via Auth0).
+tools:
+- name: lookup_product_by_upc
+  description: >-
+    Retrieve a single product and its regulatory classifications by UPC, including the current
+    classification status (PENDING, IN_REVIEW or CLASSIFICATION_COMPLETE).
+  rest:
+  - getProductByFieldMatch
+  read_only: true
+- name: list_products
+  description: >-
+    Retrieve a token-paginated page of products filtered by classification status and by
+    start_date/end_date update window.
+  rest:
+  - getListOfProducts
+  read_only: true
+- name: count_products
+  description: Count products matching a status and update-date filter, without paging the collection.
+  rest:
+  - getCountOfProducts
+  read_only: true
+- name: upsert_product_attributes
+  description: >-
+    Create or fully replace a product's submitted attributes by UPC (name, brand, supplier,
+    ingredients, SDS/manual/UN38.3 document URLs, battery chemistry, size, form, external_id).
+  rest:
+  - putProductAttributesByIdentifier
+  read_only: false
+- name: patch_product_attributes
+  description: Partially update a product's submitted attributes by UPC.
+  rest:
+  - patchProductAttributesByIdentifier
+  read_only: false
+- name: bulk_upload_products
+  description: >-
+    Upload a product catalog as a text/csv batch for asynchronous classification; returns a batchId.
+  rest:
+  - bulkUploadProducts
+  read_only: false

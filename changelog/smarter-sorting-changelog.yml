@@ -1,0 +1,17 @@
+generated: '2026-08-28'
+method: searched
+source: >-
+  Probes of https://api.smartersorting.com/docs/changelog (404), /docs/changelog.md (404), the
+  developer portal navigation at https://api.smartersorting.com/docs (which lists only the guide,
+  getting-started and the API reference), and https://www.smartersorting.com/blog (200, marketing
+  posts rather than API release notes).
+changelog_published: false
+scheme: uri-path
+current_version: v1
+entries: []
+note: >-
+  No API changelog or release-notes surface exists. The developer portal has no changelog route,
+  the OpenAPI carries info.version 1.0.0 with no dated history, and no operation is marked
+  deprecated. www.smartersorting.com/blog is a company marketing blog, not an API changelog. A
+  consumer of this API currently has no published way to learn that a classification attribute,
+  a status value or an operation has changed.

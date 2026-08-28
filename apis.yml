@@ -1,23 +1,120 @@
 aid: smarter-sorting
 name: Smarter Sorting
-description: 'Smarter Sorting is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: Smarter Sorting (which rebranded as SmarterX in 2023 and now operates as part of Syndigo)
+  is an Austin, Texas product-intelligence and regulatory-classification company serving retailers,
+  consumer-goods brands and the logistics industry. Its Smarter-1 platform takes a customer's product
+  catalog — at minimum a UPC and a product name — and returns machine-generated regulatory classifications
+  covering hazardous-waste handling (RCRA waste codes and state waste codes), transport of dangerous
+  goods (DOT, IATA and IMDG hazard classes, UN numbers, packing groups and proper shipping names), NFPA
+  704 fire-diamond ratings, lithium-battery attributes and UN 38.3 documentation, so that a retailer
+  can decide whether an item may be sold, shipped, donated, recycled, reclaimed or must be disposed
+  of as regulated waste. The company publishes a public Customer Classification API (OpenAPI 3.1.0)
+  alongside its Back of Store Solution (BOSS) platform, a developer portal, a staging environment and
+  a public status page.
+image: https://portal.smartersorting.com/assets/imgs/logo-ss-color.svg
 url: https://raw.githubusercontent.com/api-evangelist/smarter-sorting/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
 specificationVersion: '0.20'
 created: '2026-08-28'
 modified: '2026-08-28'
 tags:
 - Company
-apis: []
+- Product Data
+- Regulatory Compliance
+- Hazardous Waste
+- Retail
+- Consumer Goods
+- Supply Chain
+- Sustainability
+- Dangerous Goods
+- Product Classification
+apis:
+- aid: smarter-sorting-customer-classification-api
+  name: Customer Classification API
+  description: The Smarter-1 Customer Classification API ingests a retailer's or brand's product catalog,
+    either product-by-product or as a bulk CSV upload, and returns regulatory classifications and enriched
+    product attributes. Callers upsert products by UPC, poll for classification status (PENDING / IN_REVIEW
+    / CLASSIFICATION_COMPLETE), and retrieve results individually or as a token-paginated collection
+    filtered by status and update date.
+  humanURL: https://api.smartersorting.com/docs
+  baseURL: https://api.smartersorting.com
+  tags:
+  - Product Classification
+  - Regulatory Compliance
+  - Hazardous Waste
+  - Dangerous Goods
+  properties:
+  - type: OpenAPI
+    url: openapi/smarter-sorting-customer-classification-v1-openapi.yml
+  - type: Documentation
+    url: https://api.smartersorting.com/docs
+  - type: APIReference
+    url: https://api.smartersorting.com/docs/api
+  - type: Overlay
+    url: overlays/smarter-sorting-customer-classification-v1-overlay.yaml
+  - type: ErrorCatalog
+    url: errors/smarter-sorting-problem-types.yml
+  - type: DataModel
+    url: data-model/smarter-sorting-data-model.yml
+  - type: Conventions
+    url: conventions/smarter-sorting-conventions.yml
+  - type: RateLimits
+    url: rate-limits/smarter-sorting-rate-limits.yml
+  - type: Sandbox
+    url: sandbox/smarter-sorting-sandbox.yml
+  - type: MCPServer
+    url: mcp/smarter-sorting-mcp.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: DomainSecurity
+  url: security/smarter-sorting-domain-security.yml
+- type: Authentication
+  url: authentication/smarter-sorting-authentication.yml
 - type: Website
-  url: https://www.nasdaqprivatemarket.com/
+  url: https://www.smartersorting.com/
+- type: DeveloperPortal
+  url: https://api.smartersorting.com/docs
+- type: Documentation
+  url: https://api.smartersorting.com/docs
+- type: APIReference
+  url: https://api.smartersorting.com/docs/api
+- type: GettingStarted
+  url: https://api.smartersorting.com/docs#setup
+- type: Support
+  url: https://support.smartersorting.com/s/
+- type: Blog
+  url: https://www.smartersorting.com/blog
+- type: StatusPage
+  url: https://status.smartersorting.com/
+- type: TermsOfService
+  url: https://www.smartersorting.com/legal/terms-of-use
+- type: PrivacyPolicy
+  url: https://www.smartersorting.com/legal/privacy-policy
+- type: Conformance
+  url: conformance/smarter-sorting-conformance.yml
+- type: Compliance
+  url: security/smarter-sorting-trust-center.yml
+- type: TrustCenter
+  url: security/smarter-sorting-trust-center.yml
+- type: Security
+  url: security/smarter-sorting-vulnerability-disclosure.yml
+- type: VulnerabilityDisclosure
+  url: security/smarter-sorting-vulnerability-disclosure.yml
+- type: Lifecycle
+  url: lifecycle/smarter-sorting-lifecycle.yml
+- type: Plans
+  url: plans/smarter-sorting-plans-pricing.yml
+- type: LLMsTxt
+  url: llms/smarter-sorting-llms.txt
+- type: AgentSkill
+  url: skills/_index.yml
+x-enrichment:
+  date: '2026-08-28'
+  status: enriched
+  artifacts_added: 24
+  pass: local-v1
