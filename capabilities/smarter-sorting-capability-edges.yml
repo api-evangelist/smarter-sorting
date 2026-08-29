@@ -1,0 +1,26 @@
+slug: smarter-sorting
+provider: Smarter Sorting
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Retail & Consumer Goods
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 1
+edges:
+- tag: products
+  spec_file: smarter-sorting-products-api-openapi.yml
+  capability_id: BC-2370.10
+  capability_id_l1: BC-2370
+  capability_name: Item Master Data Management
+  confidence: 0.75
+  evidence: 'GET /classification/v1/products/:upc  getProductByFieldMatch  Lookup product by UPC; PUT
+    product attributes by UPC; POST /classification/v1/products/bulk  bulkUploadProducts; schemas: Product,
+    ProductAttributeOrClassification'
+  reason: Operations maintain a canonical product record keyed on UPC/GTIN with attributes and classifications,
+    uploaded in bulk from the customer catalog — item master data management for consumer-goods products.

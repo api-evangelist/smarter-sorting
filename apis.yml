@@ -143,6 +143,9 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: CapabilityMap
+  url: capabilities/smarter-sorting-capability-edges.yml
+  name: Smarter Sorting Business Capability Map
 - type: Overlay
   url: overlays/smarter-sorting-customer-classification-v1-overlay.yaml
 - type: MCPServer
