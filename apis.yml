@@ -11,6 +11,17 @@ description: Smarter Sorting (which rebranded as SmarterX in 2023 and now operat
   of as regulated waste. The company publishes a public Customer Classification API (OpenAPI 3.1.0)
   alongside its Back of Store Solution (BOSS) platform, a developer portal, a staging environment and
   a public status page.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: false
+  label: Hosted service · you call their endpoint
+  confidence: medium
+  source:
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 image: https://portal.smartersorting.com/assets/imgs/logo-ss-color.svg
 url: https://raw.githubusercontent.com/api-evangelist/smarter-sorting/refs/heads/main/apis.yml
 x-type: company
