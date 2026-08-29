@@ -1,0 +1,44 @@
+{
+  "provider": "smarter-sorting",
+  "sources": [
+    "_original/smarter-sorting-customer-classification-v1-openapi.json",
+    "smarter-sorting-customer-classification-v1-openapi.yml"
+  ],
+  "outputs": [
+    "smarter-sorting-api-api-openapi.yml",
+    "smarter-sorting-assets-api-openapi.yml",
+    "smarter-sorting-docs-api-openapi.yml",
+    "smarter-sorting-products-api-openapi.yml"
+  ],
+  "archived": [
+    "archived openapi/smarter-sorting-customer-classification-v1-openapi.yml"
+  ],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "smarter-sorting-customer-classification-v1-openapi.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "smarter-sorting-customer-classification-v1-openapi.json: tagged paths GET /docs(.*) -> Docs(.*)",
+    "smarter-sorting-customer-classification-v1-openapi.json: tagged paths GET /assets(.*) -> Assets(.*)",
+    "smarter-sorting-customer-classification-v1-openapi.json: tagged paths GET /api(.*) -> Api(.*)",
+    "smarter-sorting-customer-classification-v1-openapi.json: declared missing tag: Api(.*)",
+    "smarter-sorting-customer-classification-v1-openapi.json: declared missing tag: Assets(.*)",
+    "smarter-sorting-customer-classification-v1-openapi.json: declared missing tag: Docs(.*)",
+    "smarter-sorting-customer-classification-v1-openapi.json: declared missing tag: docs",
+    "smarter-sorting-customer-classification-v1-openapi.json: declared missing tag: products",
+    "smarter-sorting-customer-classification-v1-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "smarter-sorting-customer-classification-v1-openapi.yml: tagged paths GET /docs(.*) -> Docs(.*)",
+    "smarter-sorting-customer-classification-v1-openapi.yml: tagged paths GET /assets(.*) -> Assets(.*)",
+    "smarter-sorting-customer-classification-v1-openapi.yml: tagged paths GET /api(.*) -> Api(.*)",
+    "smarter-sorting-customer-classification-v1-openapi.yml: declared missing tag: Api(.*)",
+    "smarter-sorting-customer-classification-v1-openapi.yml: declared missing tag: Assets(.*)",
+    "smarter-sorting-customer-classification-v1-openapi.yml: declared missing tag: Docs(.*)",
+    "smarter-sorting-customer-classification-v1-openapi.yml: declared missing tag: docs",
+    "smarter-sorting-customer-classification-v1-openapi.yml: declared missing tag: products",
+    "tag 'Api(.*)' spans 2 source specs (smarter-sorting-customer-classification-v1-openapi.json, smarter-sorting-customer-classification-v1-openapi.yml): per-path servers applied",
+    "tag 'Assets(.*)' spans 2 source specs (smarter-sorting-customer-classification-v1-openapi.json, smarter-sorting-customer-classification-v1-openapi.yml): per-path servers applied",
+    "tag 'Docs(.*)' spans 2 source specs (smarter-sorting-customer-classification-v1-openapi.json, smarter-sorting-customer-classification-v1-openapi.yml): per-path servers applied",
+    "tag 'products' spans 2 source specs (smarter-sorting-customer-classification-v1-openapi.json, smarter-sorting-customer-classification-v1-openapi.yml): per-path servers applied"
+  ],
+  "skipped": []
+}

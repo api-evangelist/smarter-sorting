@@ -41,29 +41,20 @@ tags:
 - Dangerous Goods
 - Product Classification
 apis:
-- aid: smarter-sorting-customer-classification-api
-  name: Customer Classification API
-  description: The Smarter-1 Customer Classification API ingests a retailer's or brand's product catalog,
-    either product-by-product or as a bulk CSV upload, and returns regulatory classifications and enriched
-    product attributes. Callers upsert products by UPC, poll for classification status (PENDING / IN_REVIEW
-    / CLASSIFICATION_COMPLETE), and retrieve results individually or as a token-paginated collection
-    filtered by status and update date.
+- aid: smarter-sorting:smarter-sorting-api-api
+  name: Smarter Sorting Api(.*) API
+  description: The Api(.*) API from Smarter Sorting — 1 operation(s) for api(.*).
   humanURL: https://api.smartersorting.com/docs
   baseURL: https://api.smartersorting.com
   tags:
-  - Product Classification
-  - Regulatory Compliance
-  - Hazardous Waste
-  - Dangerous Goods
+  - Api(.*)
   properties:
   - type: OpenAPI
-    url: openapi/smarter-sorting-customer-classification-v1-openapi.yml
+    url: openapi/smarter-sorting-api-api-openapi.yml
   - type: Documentation
     url: https://api.smartersorting.com/docs
   - type: APIReference
     url: https://api.smartersorting.com/docs/api
-  - type: Overlay
-    url: overlays/smarter-sorting-customer-classification-v1-overlay.yaml
   - type: ErrorCatalog
     url: errors/smarter-sorting-problem-types.yml
   - type: DataModel
@@ -74,14 +65,88 @@ apis:
     url: rate-limits/smarter-sorting-rate-limits.yml
   - type: Sandbox
     url: sandbox/smarter-sorting-sandbox.yml
-  - type: MCPServer
-    url: mcp/smarter-sorting-mcp.yml
+- aid: smarter-sorting:smarter-sorting-assets-api
+  name: Smarter Sorting Assets(.*) API
+  description: The Assets(.*) API from Smarter Sorting — 1 operation(s) for assets(.*).
+  humanURL: https://api.smartersorting.com/docs
+  baseURL: https://api.smartersorting.com
+  tags:
+  - Assets(.*)
+  properties:
+  - type: OpenAPI
+    url: openapi/smarter-sorting-assets-api-openapi.yml
+  - type: Documentation
+    url: https://api.smartersorting.com/docs
+  - type: APIReference
+    url: https://api.smartersorting.com/docs/api
+  - type: ErrorCatalog
+    url: errors/smarter-sorting-problem-types.yml
+  - type: DataModel
+    url: data-model/smarter-sorting-data-model.yml
+  - type: Conventions
+    url: conventions/smarter-sorting-conventions.yml
+  - type: RateLimits
+    url: rate-limits/smarter-sorting-rate-limits.yml
+  - type: Sandbox
+    url: sandbox/smarter-sorting-sandbox.yml
+- aid: smarter-sorting:smarter-sorting-docs-api
+  name: Smarter Sorting Docs(.*) API
+  description: The Docs(.*) API from Smarter Sorting — 2 operation(s) for docs(.*).
+  humanURL: https://api.smartersorting.com/docs
+  baseURL: https://api.smartersorting.com
+  tags:
+  - Docs(.*)
+  properties:
+  - type: OpenAPI
+    url: openapi/smarter-sorting-docs-api-openapi.yml
+  - type: Documentation
+    url: https://api.smartersorting.com/docs
+  - type: APIReference
+    url: https://api.smartersorting.com/docs/api
+  - type: ErrorCatalog
+    url: errors/smarter-sorting-problem-types.yml
+  - type: DataModel
+    url: data-model/smarter-sorting-data-model.yml
+  - type: Conventions
+    url: conventions/smarter-sorting-conventions.yml
+  - type: RateLimits
+    url: rate-limits/smarter-sorting-rate-limits.yml
+  - type: Sandbox
+    url: sandbox/smarter-sorting-sandbox.yml
+- aid: smarter-sorting:smarter-sorting-products-api
+  name: Smarter Sorting Products API
+  description: The products API from Smarter Sorting — 4 operation(s) for products.
+  humanURL: https://api.smartersorting.com/docs
+  baseURL: https://api.smartersorting.com
+  tags:
+  - products
+  properties:
+  - type: OpenAPI
+    url: openapi/smarter-sorting-products-api-openapi.yml
+  - type: Documentation
+    url: https://api.smartersorting.com/docs
+  - type: APIReference
+    url: https://api.smartersorting.com/docs/api
+  - type: ErrorCatalog
+    url: errors/smarter-sorting-problem-types.yml
+  - type: DataModel
+    url: data-model/smarter-sorting-data-model.yml
+  - type: Conventions
+    url: conventions/smarter-sorting-conventions.yml
+  - type: RateLimits
+    url: rate-limits/smarter-sorting-rate-limits.yml
+  - type: Sandbox
+    url: sandbox/smarter-sorting-sandbox.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: Overlay
+  url: overlays/smarter-sorting-customer-classification-v1-overlay.yaml
+- type: MCPServer
+  url: mcp/smarter-sorting-mcp.yml
 - type: DomainSecurity
   url: security/smarter-sorting-domain-security.yml
 - type: Authentication

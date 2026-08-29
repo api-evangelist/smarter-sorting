@@ -1,0 +1,52 @@
+openapi: 3.2.0
+info:
+  title: Smarter Sorting Docs(.*) API
+  version: 1.0.0
+  description: 'Operations tagged Docs(.*) across 2 of this provider''s published API definitions: smarter-sorting-customer-classification-v1-openapi.json, smarter-sorting-customer-classification-v1-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.smartersorting.com
+tags:
+- name: Docs(.*)
+paths:
+  /docs(.*):
+    get:
+      summary: /docs proxy
+      description: Redirect /docs host to new zudoku portal
+      operationId: proxy-docs
+      tags:
+      - Docs(.*)
+    servers:
+    - url: https://api.smartersorting.com
+  /classification/v1/docs:
+    get:
+      x-internal: false
+      summary: OpenAPI spec
+      tags:
+      - Docs(.*)
+      operationId: customerClassificationAPIDocs
+      responses:
+        '200':
+          description: The OpenAPI spec for the Customer Classification API v1.
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  openapi: 3.1.0
+                  info:
+                    title: OpenAPI Spec
+                    description: This is a valid OpenAPI spec.
+                    version: latest
+                  servers: []
+                  tags: []
+                  paths: {}
+    servers:
+    - url: https://api.smartersorting.com
+components:
+  securitySchemes:
+    api_key:
+      type: http
+      scheme: bearer
+x-refined-from:
+- smarter-sorting-customer-classification-v1-openapi.json
+- smarter-sorting-customer-classification-v1-openapi.yml

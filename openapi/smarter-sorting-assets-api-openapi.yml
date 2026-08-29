@@ -1,0 +1,27 @@
+openapi: 3.2.0
+info:
+  title: Smarter Sorting Assets(.*) API
+  version: 1.0.0
+  description: 'Operations tagged Assets(.*) across 2 of this provider''s published API definitions: smarter-sorting-customer-classification-v1-openapi.json, smarter-sorting-customer-classification-v1-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.smartersorting.com
+tags:
+- name: Assets(.*)
+paths:
+  /assets(.*):
+    get:
+      summary: /assets proxy
+      description: Proxy assets endpoints to new zudoku portal
+      operationId: proxy-assets
+      tags:
+      - Assets(.*)
+    servers:
+    - url: https://api.smartersorting.com
+components:
+  securitySchemes:
+    api_key:
+      type: http
+      scheme: bearer
+x-refined-from:
+- smarter-sorting-customer-classification-v1-openapi.json
+- smarter-sorting-customer-classification-v1-openapi.yml

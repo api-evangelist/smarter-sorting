@@ -1,0 +1,757 @@
+openapi: 3.2.0
+info:
+  title: Smarter Sorting Products API
+  version: 1.0.0
+  description: 'Operations tagged products across 2 of this provider''s published API definitions: smarter-sorting-customer-classification-v1-openapi.json, smarter-sorting-customer-classification-v1-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.smartersorting.com
+tags:
+- name: products
+paths:
+  /classification/v1/products/count:
+    get:
+      summary: Count filtered products
+      operationId: getCountOfProducts
+      description: Counts products based on specified filters
+      tags:
+      - products
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        example: Bearer YOUR_KEY_HERE
+        schema:
+          type: string
+        description: The `Authorization` header is used to authenticate with the API using your API key. Value is of the format `Bearer YOUR_KEY_HERE`.
+      - name: statuses
+        in: query
+        description: Filter by product status - must be included in array format.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductStatus'
+        example:
+        - PENDING
+        - IN_REVIEW
+      - name: start_date
+        in: query
+        description: Only count records with last_updated_date > start_date
+        required: false
+        schema:
+          type: string
+          format: date-time
+      - name: end_date
+        in: query
+        description: Only count records with last_updated_date < end_date
+        required: false
+        schema:
+          type: string
+          format: date-time
+      responses:
+        '200':
+          description: A count of products matching the criteria.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductCountResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      security:
+      - api_key: []
+    servers:
+    - url: https://api.smartersorting.com
+  /classification/v1/products/:upc:
+    get:
+      summary: Lookup product by UPC
+      operationId: getProductByFieldMatch
+      tags:
+      - products
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        example: Bearer YOUR_KEY_HERE
+        schema:
+          type: string
+        description: The `Authorization` header is used to authenticate with the API using your API key. Value is of the format `Bearer YOUR_KEY_HERE`.
+      - name: upc
+        in: path
+        description: UPC for the desired product
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          pattern: ^(?=.*[1-9])[0-9]{1,14}$
+          description: A valid UPC. Must contain at least one non-zero digit and must not exceed 14 characters.
+      responses:
+        '200':
+          description: Product found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '400':
+          description: Bad request, must provide valid UPC.
+        '404':
+          description: Product not found
+      security:
+      - api_key: []
+    put:
+      x-internal: false
+      summary: PUT product attributes by UPC
+      description: For the provided UPC, overwrite the existing product's attributes.
+      operationId: putProductAttributesByIdentifier
+      tags:
+      - products
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        example: Bearer YOUR_KEY_HERE
+        schema:
+          type: string
+        description: The `Authorization` header is used to authenticate with the API using your API key. Value is of the format `Bearer YOUR_KEY_HERE`.
+      - name: upc
+        in: path
+        description: UPC for the desired product
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          pattern: ^(?=.*[1-9])[0-9]{1,14}$
+          description: A valid UPC. Must contain at least one non-zero digit and must not exceed 14 characters.
+      requestBody:
+        description: "The full set of attributes you wish to persist for the provided UPC. Note that any previously existing attributes will be overwritten by the ones provided in the request body. \n For the best classification results, be sure to provide \"product_name\". You can further increase the quality of classifications by providing \"brand_name\" and \"description\" as well. \n\n Additionally, the payload can include any parameters you wish to be persisted and returned back in future results to make integration with your application easier (for example, an internal SKU)."
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+            example:
+              product_name: ACME Anvil
+              internal_sku: retailer-id-123
+              brand: ACME
+              description: Custom description for your product
+      responses:
+        '200':
+          description: Product attributes persisted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: The specified product was not found
+      security:
+      - api_key: []
+    patch:
+      x-internal: false
+      summary: PATCH product attributes by UPC
+      description: Update or append attributes to the product identified by the provided UPC.
+      operationId: patchProductAttributesByIdentifier
+      tags:
+      - products
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        example: Bearer YOUR_KEY_HERE
+        schema:
+          type: string
+        description: The `Authorization` header is used to authenticate with the API using your API key. Value is of the format `Bearer YOUR_KEY_HERE`.
+      - name: upc
+        in: path
+        description: UPC for the desired product
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          pattern: ^(?=.*[1-9])[0-9]{1,14}$
+          description: A valid UPC. Must contain at least one non-zero digit and must not exceed 14 characters.
+      requestBody:
+        description: "The full set of attributes you wish to update or append for the provided UPC. Note that any previously existing attributes will be maintained, and those included in the request body will either (1) update an existing attribute with the same name or (2) add a new attribute to the existing set. \n For the best classification results, be sure to provide \"product_name\". You can further increase the quality of classifications by providing \"brand_name\" and \"description\" as well. \n\n Additionally, the payload can include any parameters you wish to be persisted and returned back in future results to make integration with your application easier (for example, an internal SKU)."
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+            example:
+              product_name: ACME Anvil
+              internal_sku: retailer-id-123
+              brand: ACME
+              description: Custom description for your product
+      responses:
+        '200':
+          description: Product attributes persisted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: The specified product was not found
+      security:
+      - api_key: []
+    servers:
+    - url: https://api.smartersorting.com
+  /classification/v1/products/bulk:
+    post:
+      summary: Bulk upload products
+      operationId: bulkUploadProducts
+      description: 'Upload products in text/csv format. The header row must include both "upc", and "name" (the product''s name) at a minimum.
+
+
+        For the best classification results, please provide "brand" and "description".
+
+
+        Please note that the following fields, when provided by a supplier or retailer, will be treated as special parameters for a product which cannot be overwritten by enrichment or other automation and will be used for classification: "upc", "name", "brand", "supplier", "ingredients", "sds", "manual", "un38", "battery_chemistry", "size", "form" and "external_id".
+
+
+        Suppliers: Additionally, when providing "ingredients", please be advised not to include proprietary data, as this field will be shared with retailers based on a UPC match.
+
+
+        Finally, your CSV may include any other parameters you wish to be persisted and returned back in future results to make integration with your applications easier. An example of this may be an SKU or a department code. Note that if you provide "external_id", it will appear in other parts of the SmarterSorting ecosystem, such as our UI portal.'
+      tags:
+      - products
+      requestBody:
+        description: The full CSV payload to be uploaded
+        content:
+          text/csv:
+            schema:
+              $ref: '#/components/schemas/ProductCSVBatch'
+            example: 'upc,name,brand
+
+              72527273070,"Cleaning Product","Greater Brand"
+
+              ,"An Amazing Lip Gloss","Cleanest Brand"
+
+              123456789012,,'
+        required: true
+      responses:
+        '202':
+          description: Product batch successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchCreationResult'
+              example:
+                batchId: 8ec40e34-9f5f-478f-aefe-60f614d9be4c
+        '400':
+          description: Invalid file format
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        example: Bearer YOUR_KEY_HERE
+        schema:
+          type: string
+        description: The `Authorization` header is used to authenticate with the API using your API key. Value is of the format `Bearer YOUR_KEY_HERE`.
+      security:
+      - api_key: []
+    servers:
+    - url: https://api.smartersorting.com
+  /classification/v1/products:
+    get:
+      summary: Retrieve filtered products
+      operationId: getListOfProducts
+      description: Returns products based on specified filters with pagination. Products will be ordered by last_updated_date descending.
+      tags:
+      - products
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        example: Bearer YOUR_KEY_HERE
+        schema:
+          type: string
+        description: The `Authorization` header is used to authenticate with the API using your API key. Value is of the format `Bearer YOUR_KEY_HERE`.
+      - name: start_date
+        in: query
+        description: Only include records with last_updated_date > start_date
+        required: false
+        schema:
+          type: string
+          format: date-time
+      - name: end_date
+        in: query
+        description: Only include records with last_updated_date < end_date
+        required: false
+        schema:
+          type: string
+          format: date-time
+      - name: statuses
+        in: query
+        description: Filter by product status - must be included in array format.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductStatus'
+        example:
+        - PENDING
+        - IN_REVIEW
+      - name: page_size
+        in: query
+        description: Number of products per page (default 50, max 100)
+        required: false
+        schema:
+          type: integer
+          default: 50
+          minimum: 1
+          maximum: 100
+      - name: page_token
+        in: query
+        description: A pagination token used to continue retrieving results from a previous query. If omitted, the query starts from the beginning. Use the value returned in the response to request the next batch of results.
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: A list of products matching the criteria.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      security:
+      - api_key: []
+    servers:
+    - url: https://api.smartersorting.com
+components:
+  schemas:
+    ProductCSVBatch:
+      type: string
+      example: 'upc,name,brand
+
+        72527273070,"Cleaning Product","Greater Brand"
+
+        ,"An Amazing Lip Gloss","Cleanest Brand"
+
+        123456789012,,'
+    ProductResponse:
+      type: object
+      description: Paginated response of products.
+      properties:
+        pagination:
+          type: object
+          description: Pagination details.
+          properties:
+            total:
+              type: integer
+              description: Total number of products matching the filters.
+            next_page_token:
+              type: string
+              description: Token to provide in the next request in order to fetch the next page of results
+            page_size:
+              type: integer
+              description: Number of products per page.
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+      example:
+        pagination:
+          total: 100
+          next_page_token: WyJoZWxsbyIsICJ3b3JsZCJd
+          page_size: 1
+        products:
+        - attested:
+            attested_by: supplier_who_attested
+            attested_timestamp: '2025-07-14T11:44:00.622Z'
+            is_attested: true
+          attributes:
+          - name: BRAND_NAME
+            value: ACME
+          - name: INGREDIENTS
+            value: water, oil, linalool, zinc
+          - name: MERCH_CLASS
+            value: FRAGRANCE
+          - name: MERCH_DEPARTMENT
+            value: WMNS FRAGRANCE
+          - name: SKU
+            value: '12345'
+          - name: external_id
+            value: '12345'
+          classifications:
+          - name: batt_cell_or_button_cell
+            value: ''
+          - name: battery_chemistry
+            value: ''
+          - name: battery_configuration
+            value: ''
+          - name: battery_used_for_running_equipment
+            value: ''
+          - name: contains_battery
+            value: false
+          - name: dot_basic_description
+            value: UN1266, PERFUMERY PRODUCTS, 3, II
+          - name: dot_exception_codes
+            value: 173.150(g) - Exception for flammable retail products containing ethyl alcohol - no markings required
+          - name: dot_hazard_class
+            value: '3'
+          - name: dot_least_burden
+            value: EXCEPTIONS APPLY
+          - name: dot_limited_quantity
+            value: true
+          - name: dot_packing_group
+            value: II
+          - name: dot_proper_shipping_name
+            value: PERFUMERY PRODUCTS
+          - name: dot_special_permit
+            value: ''
+          - name: dot_sub_hazard_class
+            value: N/A
+          - name: dot_technical_name
+            value: ''
+          - name: dot_un_number
+            value: UN1266
+          - name: flash_point
+            value: '65.3'
+          - name: flash_point_uom
+            value: F
+          - name: form
+            value: LIQUID
+          - name: iata_basic_description
+            value: UN1266, PERFUMERY PRODUCTS, 3, II
+          - name: iata_exception_codes
+            value: ID8000 - Eligible for ID8000 consumer commodities exception
+          - name: iata_hazard_class
+            value: '3'
+          - name: iata_least_burden
+            value: LIMITED QUANTITY
+          - name: iata_limited_quantity
+            value: true
+          - name: iata_packing_group
+            value: II
+          - name: iata_proper_shipping_name
+            value: PERFUMERY PRODUCTS
+          - name: iata_sub_hazard_class
+            value: N/A
+          - name: iata_technical_name
+            value: ''
+          - name: iata_un_number
+            value: UN1266
+          - name: ifc_codes
+            value: FLIB
+          - name: imdg_basic_description
+            value: UN1266, PERFUMERY PRODUCTS, 3, II
+          - name: imdg_exception_codes
+            value: ''
+          - name: imdg_hazard_class
+            value: '3'
+          - name: imdg_least_burden
+            value: LIMITED QUANTITY
+          - name: imdg_limited_quantity
+            value: true
+          - name: imdg_marine_pollutant
+            value: false
+          - name: imdg_packing_group
+            value: II
+          - name: imdg_proper_shipping_name
+            value: PERFUMERY PRODUCTS
+          - name: imdg_sub_hazard_class
+            value: N/A
+          - name: imdg_technical_name
+            value: ''
+          - name: imdg_un_number
+            value: UN1266
+          - name: is_multi_component
+            value: false
+          - name: lithium_metal_weight
+            value: ''
+          - name: lithium_metal_weight_uom
+            value: ''
+          - name: lithium_watt_hrs
+            value: ''
+          - name: nfpa_flammability
+            value: '3'
+          - name: nfpa_health
+            value: '2'
+          - name: nfpa_reactivity
+            value: '0'
+          - name: nfpa_special
+            value: ''
+          - name: ph_max
+            value: ''
+          - name: ph_min
+            value: ''
+          - name: product_itself_battery
+            value: false
+          - name: scopes
+            value: formulated
+          - name: sds_link
+            value: https://files.smartersorting.com/sds/view/identifier/filename.pdf
+          - name: size_uom
+            value: OZ
+          - name: total_number_of_batt_or_cells
+            value: ''
+          - name: un38.3_document_link
+            value: ''
+          - name: upc_size
+            value: '1.7'
+          - name: waste_rcra_codes
+            value: D001
+          - name: waste_state_codes
+            value: CA 331, WA WT02
+          - name: weight_of_all_batts
+            value: ''
+          - name: weight_of_all_batts_uom
+            value: ''
+          created_date: '2025-05-15T22:18:17.780Z'
+          last_updated_date: '2026-06-10T15:51:00.916Z'
+          product_name: Acme Anvil
+          status: CLASSIFICATION_COMPLETE
+          upc: 03345678901234
+    ProductCountResponse:
+      type: object
+      description: Response containing the count of products matching the filters.
+      properties:
+        count:
+          type: integer
+          description: Total count of products matching the filters.
+      example:
+        count: 100
+    Product:
+      type: object
+      properties:
+        status:
+          type: string
+          $ref: '#/components/schemas/ProductStatus'
+          required: true
+        last_updated_date:
+          type: string
+          format: date
+          required: true
+        upc:
+          type: string
+          required: false
+        product_name:
+          type: string
+          required: false
+        attributes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductAttributeOrClassification'
+        classifications:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductAttributeOrClassification'
+      additionalProperties: true
+      description: A dictionary representing a product with string keys and any values
+      example:
+        attested:
+          attested_by: supplier_who_attested
+          attested_timestamp: '2025-07-14T11:44:00.622Z'
+          is_attested: true
+        attributes:
+        - name: BRAND_NAME
+          value: ACME
+        - name: INGREDIENTS
+          value: water, oil, linalool, zinc
+        - name: MERCH_CLASS
+          value: FRAGRANCE
+        - name: MERCH_DEPARTMENT
+          value: WMNS FRAGRANCE
+        - name: SKU
+          value: '12345'
+        - name: external_id
+          value: '12345'
+        classifications:
+        - name: batt_cell_or_button_cell
+          value: ''
+        - name: battery_chemistry
+          value: ''
+        - name: battery_configuration
+          value: ''
+        - name: battery_used_for_running_equipment
+          value: ''
+        - name: contains_battery
+          value: false
+        - name: dot_basic_description
+          value: UN1266, PERFUMERY PRODUCTS, 3, II
+        - name: dot_exception_codes
+          value: 173.150(g) - Exception for flammable retail products containing ethyl alcohol - no markings required
+        - name: dot_hazard_class
+          value: '3'
+        - name: dot_least_burden
+          value: EXCEPTIONS APPLY
+        - name: dot_limited_quantity
+          value: true
+        - name: dot_packing_group
+          value: II
+        - name: dot_proper_shipping_name
+          value: PERFUMERY PRODUCTS
+        - name: dot_special_permit
+          value: ''
+        - name: dot_sub_hazard_class
+          value: N/A
+        - name: dot_technical_name
+          value: ''
+        - name: dot_un_number
+          value: UN1266
+        - name: flash_point
+          value: '65.3'
+        - name: flash_point_uom
+          value: F
+        - name: form
+          value: LIQUID
+        - name: iata_basic_description
+          value: UN1266, PERFUMERY PRODUCTS, 3, II
+        - name: iata_exception_codes
+          value: ID8000 - Eligible for ID8000 consumer commodities exception
+        - name: iata_hazard_class
+          value: '3'
+        - name: iata_least_burden
+          value: LIMITED QUANTITY
+        - name: iata_limited_quantity
+          value: true
+        - name: iata_packing_group
+          value: II
+        - name: iata_proper_shipping_name
+          value: PERFUMERY PRODUCTS
+        - name: iata_sub_hazard_class
+          value: N/A
+        - name: iata_technical_name
+          value: ''
+        - name: iata_un_number
+          value: UN1266
+        - name: ifc_codes
+          value: FLIB
+        - name: imdg_basic_description
+          value: UN1266, PERFUMERY PRODUCTS, 3, II
+        - name: imdg_exception_codes
+          value: ''
+        - name: imdg_hazard_class
+          value: '3'
+        - name: imdg_least_burden
+          value: LIMITED QUANTITY
+        - name: imdg_limited_quantity
+          value: true
+        - name: imdg_marine_pollutant
+          value: false
+        - name: imdg_packing_group
+          value: II
+        - name: imdg_proper_shipping_name
+          value: PERFUMERY PRODUCTS
+        - name: imdg_sub_hazard_class
+          value: N/A
+        - name: imdg_technical_name
+          value: ''
+        - name: imdg_un_number
+          value: UN1266
+        - name: is_multi_component
+          value: false
+        - name: lithium_metal_weight
+          value: ''
+        - name: lithium_metal_weight_uom
+          value: ''
+        - name: lithium_watt_hrs
+          value: ''
+        - name: nfpa_flammability
+          value: '3'
+        - name: nfpa_health
+          value: '2'
+        - name: nfpa_reactivity
+          value: '0'
+        - name: nfpa_special
+          value: ''
+        - name: ph_max
+          value: ''
+        - name: ph_min
+          value: ''
+        - name: product_itself_battery
+          value: false
+        - name: scopes
+          value: formulated
+        - name: sds_link
+          value: https://files.smartersorting.com/sds/view/identifier/filename.pdf
+        - name: size_uom
+          value: OZ
+        - name: total_number_of_batt_or_cells
+          value: ''
+        - name: un38.3_document_link
+          value: ''
+        - name: upc_size
+          value: '1.7'
+        - name: waste_rcra_codes
+          value: D001
+        - name: waste_state_codes
+          value: CA 331, WA WT02
+        - name: weight_of_all_batts
+          value: ''
+        - name: weight_of_all_batts_uom
+          value: ''
+        created_date: '2025-05-15T22:18:17.780Z'
+        last_updated_date: '2026-06-10T15:51:00.916Z'
+        product_name: Acme Anvil
+        status: CLASSIFICATION_COMPLETE
+        upc: 03345678901234
+    ProblemDetails:
+      type: object
+      description: Problem Details object as per RFC 7807.
+      properties:
+        type:
+          type: string
+          format: uri
+          description: A URI reference that identifies the problem type.
+        title:
+          type: string
+          description: A short, human-readable summary of the problem.
+        status:
+          type: integer
+          description: The HTTP status code.
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          format: uri
+          description: A URI reference that identifies the specific occurrence of the problem.
+    ProductAttributeOrClassification:
+      type: object
+      properties:
+        name:
+          type: string
+          example: battery_chemistry
+        value:
+          type: object
+          description: Can be of any type (string, number, object, etc.)
+          example: alkaline
+      description: Represents either an attribute of a product or a classification result with a name and a value
+    BatchCreationResult:
+      type: object
+      properties:
+        batchId:
+          type: string
+          example: 8ec40e34-9f5f-478f-aefe-60f614d9be4c
+      description: Represents the unique synthetic identifier for a batch of uploaded products
+    ProductStatus:
+      type: string
+      enum:
+      - PENDING
+      - CLASSIFICATION_COMPLETE
+      - IN_REVIEW
+  securitySchemes:
+    api_key:
+      type: http
+      scheme: bearer
+x-refined-from:
+- smarter-sorting-customer-classification-v1-openapi.json
+- smarter-sorting-customer-classification-v1-openapi.yml
