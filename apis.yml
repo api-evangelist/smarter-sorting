@@ -46,7 +46,8 @@ apis:
   description: The Api(.*) API from Smarter Sorting — 1 operation(s) for api(.*).
   humanURL: https://api.smartersorting.com/docs
   baseURL: https://api.smartersorting.com
-  tags:
+  tags: []
+  tags_raw:
   - Api(.*)
   properties:
   - type: OpenAPI
@@ -71,6 +72,8 @@ apis:
   humanURL: https://api.smartersorting.com/docs
   baseURL: https://api.smartersorting.com
   tags:
+  - Assets
+  tags_raw:
   - Assets(.*)
   properties:
   - type: OpenAPI
@@ -95,6 +98,8 @@ apis:
   humanURL: https://api.smartersorting.com/docs
   baseURL: https://api.smartersorting.com
   tags:
+  - Docs
+  tags_raw:
   - Docs(.*)
   properties:
   - type: OpenAPI
@@ -119,6 +124,8 @@ apis:
   humanURL: https://api.smartersorting.com/docs
   baseURL: https://api.smartersorting.com
   tags:
+  - Product
+  tags_raw:
   - products
   properties:
   - type: OpenAPI
