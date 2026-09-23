@@ -1,12 +1,12 @@
 openapi: 3.2.0
 info:
-  title: Smarter Sorting Api(.*) API
+  title: Customer Classification Api(.*) API
+  description: API for triggering and retrieving classifications for products
   version: 1.0.0
-  description: 'Operations tagged Api(.*) across 2 of this provider''s published API definitions: smarter-sorting-customer-classification-v1-openapi.json, smarter-sorting-customer-classification-v1-openapi.yml. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.smartersorting.com
 tags:
-- name: Api(.*)
+- name: api
 paths:
   /api(.*):
     get:
@@ -14,14 +14,9 @@ paths:
       description: Proxy /api docs endpoints to new zudoku portal
       operationId: proxy-api-docs
       tags:
-      - Api(.*)
-    servers:
-    - url: https://api.smartersorting.com
+      - api
 components:
   securitySchemes:
     api_key:
       type: http
       scheme: bearer
-x-refined-from:
-- smarter-sorting-customer-classification-v1-openapi.json
-- smarter-sorting-customer-classification-v1-openapi.yml

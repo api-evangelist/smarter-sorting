@@ -1,12 +1,12 @@
 openapi: 3.2.0
 info:
-  title: Smarter Sorting Products API
+  title: Customer Classification Products API
+  description: API for triggering and retrieving classifications for products
   version: 1.0.0
-  description: 'Operations tagged products across 2 of this provider''s published API definitions: smarter-sorting-customer-classification-v1-openapi.json, smarter-sorting-customer-classification-v1-openapi.yml. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.smartersorting.com
 tags:
-- name: products
+- name: Products
 paths:
   /classification/v1/products/count:
     get:
@@ -14,7 +14,7 @@ paths:
       operationId: getCountOfProducts
       description: Counts products based on specified filters
       tags:
-      - products
+      - Products
       parameters:
       - name: Authorization
         in: header
@@ -65,14 +65,12 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       security:
       - api_key: []
-    servers:
-    - url: https://api.smartersorting.com
   /classification/v1/products/:upc:
     get:
       summary: Lookup product by UPC
       operationId: getProductByFieldMatch
       tags:
-      - products
+      - Products
       parameters:
       - name: Authorization
         in: header
@@ -110,7 +108,7 @@ paths:
       description: For the provided UPC, overwrite the existing product's attributes.
       operationId: putProductAttributesByIdentifier
       tags:
-      - products
+      - Products
       parameters:
       - name: Authorization
         in: header
@@ -159,7 +157,7 @@ paths:
       description: Update or append attributes to the product identified by the provided UPC.
       operationId: patchProductAttributesByIdentifier
       tags:
-      - products
+      - Products
       parameters:
       - name: Authorization
         in: header
@@ -202,8 +200,6 @@ paths:
           description: The specified product was not found
       security:
       - api_key: []
-    servers:
-    - url: https://api.smartersorting.com
   /classification/v1/products/bulk:
     post:
       summary: Bulk upload products
@@ -222,7 +218,7 @@ paths:
 
         Finally, your CSV may include any other parameters you wish to be persisted and returned back in future results to make integration with your applications easier. An example of this may be an SKU or a department code. Note that if you provide "external_id", it will appear in other parts of the SmarterSorting ecosystem, such as our UI portal.'
       tags:
-      - products
+      - Products
       requestBody:
         description: The full CSV payload to be uploaded
         content:
@@ -258,15 +254,13 @@ paths:
         description: The `Authorization` header is used to authenticate with the API using your API key. Value is of the format `Bearer YOUR_KEY_HERE`.
       security:
       - api_key: []
-    servers:
-    - url: https://api.smartersorting.com
   /classification/v1/products:
     get:
       summary: Retrieve filtered products
       operationId: getListOfProducts
       description: Returns products based on specified filters with pagination. Products will be ordered by last_updated_date descending.
       tags:
-      - products
+      - Products
       parameters:
       - name: Authorization
         in: header
@@ -332,202 +326,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       security:
       - api_key: []
-    servers:
-    - url: https://api.smartersorting.com
 components:
   schemas:
-    ProductCSVBatch:
-      type: string
-      example: 'upc,name,brand
-
-        72527273070,"Cleaning Product","Greater Brand"
-
-        ,"An Amazing Lip Gloss","Cleanest Brand"
-
-        123456789012,,'
-    ProductResponse:
-      type: object
-      description: Paginated response of products.
-      properties:
-        pagination:
-          type: object
-          description: Pagination details.
-          properties:
-            total:
-              type: integer
-              description: Total number of products matching the filters.
-            next_page_token:
-              type: string
-              description: Token to provide in the next request in order to fetch the next page of results
-            page_size:
-              type: integer
-              description: Number of products per page.
-        products:
-          type: array
-          items:
-            $ref: '#/components/schemas/Product'
-      example:
-        pagination:
-          total: 100
-          next_page_token: WyJoZWxsbyIsICJ3b3JsZCJd
-          page_size: 1
-        products:
-        - attested:
-            attested_by: supplier_who_attested
-            attested_timestamp: '2025-07-14T11:44:00.622Z'
-            is_attested: true
-          attributes:
-          - name: BRAND_NAME
-            value: ACME
-          - name: INGREDIENTS
-            value: water, oil, linalool, zinc
-          - name: MERCH_CLASS
-            value: FRAGRANCE
-          - name: MERCH_DEPARTMENT
-            value: WMNS FRAGRANCE
-          - name: SKU
-            value: '12345'
-          - name: external_id
-            value: '12345'
-          classifications:
-          - name: batt_cell_or_button_cell
-            value: ''
-          - name: battery_chemistry
-            value: ''
-          - name: battery_configuration
-            value: ''
-          - name: battery_used_for_running_equipment
-            value: ''
-          - name: contains_battery
-            value: false
-          - name: dot_basic_description
-            value: UN1266, PERFUMERY PRODUCTS, 3, II
-          - name: dot_exception_codes
-            value: 173.150(g) - Exception for flammable retail products containing ethyl alcohol - no markings required
-          - name: dot_hazard_class
-            value: '3'
-          - name: dot_least_burden
-            value: EXCEPTIONS APPLY
-          - name: dot_limited_quantity
-            value: true
-          - name: dot_packing_group
-            value: II
-          - name: dot_proper_shipping_name
-            value: PERFUMERY PRODUCTS
-          - name: dot_special_permit
-            value: ''
-          - name: dot_sub_hazard_class
-            value: N/A
-          - name: dot_technical_name
-            value: ''
-          - name: dot_un_number
-            value: UN1266
-          - name: flash_point
-            value: '65.3'
-          - name: flash_point_uom
-            value: F
-          - name: form
-            value: LIQUID
-          - name: iata_basic_description
-            value: UN1266, PERFUMERY PRODUCTS, 3, II
-          - name: iata_exception_codes
-            value: ID8000 - Eligible for ID8000 consumer commodities exception
-          - name: iata_hazard_class
-            value: '3'
-          - name: iata_least_burden
-            value: LIMITED QUANTITY
-          - name: iata_limited_quantity
-            value: true
-          - name: iata_packing_group
-            value: II
-          - name: iata_proper_shipping_name
-            value: PERFUMERY PRODUCTS
-          - name: iata_sub_hazard_class
-            value: N/A
-          - name: iata_technical_name
-            value: ''
-          - name: iata_un_number
-            value: UN1266
-          - name: ifc_codes
-            value: FLIB
-          - name: imdg_basic_description
-            value: UN1266, PERFUMERY PRODUCTS, 3, II
-          - name: imdg_exception_codes
-            value: ''
-          - name: imdg_hazard_class
-            value: '3'
-          - name: imdg_least_burden
-            value: LIMITED QUANTITY
-          - name: imdg_limited_quantity
-            value: true
-          - name: imdg_marine_pollutant
-            value: false
-          - name: imdg_packing_group
-            value: II
-          - name: imdg_proper_shipping_name
-            value: PERFUMERY PRODUCTS
-          - name: imdg_sub_hazard_class
-            value: N/A
-          - name: imdg_technical_name
-            value: ''
-          - name: imdg_un_number
-            value: UN1266
-          - name: is_multi_component
-            value: false
-          - name: lithium_metal_weight
-            value: ''
-          - name: lithium_metal_weight_uom
-            value: ''
-          - name: lithium_watt_hrs
-            value: ''
-          - name: nfpa_flammability
-            value: '3'
-          - name: nfpa_health
-            value: '2'
-          - name: nfpa_reactivity
-            value: '0'
-          - name: nfpa_special
-            value: ''
-          - name: ph_max
-            value: ''
-          - name: ph_min
-            value: ''
-          - name: product_itself_battery
-            value: false
-          - name: scopes
-            value: formulated
-          - name: sds_link
-            value: https://files.smartersorting.com/sds/view/identifier/filename.pdf
-          - name: size_uom
-            value: OZ
-          - name: total_number_of_batt_or_cells
-            value: ''
-          - name: un38.3_document_link
-            value: ''
-          - name: upc_size
-            value: '1.7'
-          - name: waste_rcra_codes
-            value: D001
-          - name: waste_state_codes
-            value: CA 331, WA WT02
-          - name: weight_of_all_batts
-            value: ''
-          - name: weight_of_all_batts_uom
-            value: ''
-          created_date: '2025-05-15T22:18:17.780Z'
-          last_updated_date: '2026-06-10T15:51:00.916Z'
-          product_name: Acme Anvil
-          status: CLASSIFICATION_COMPLETE
-          upc: 03345678901234
-    ProductCountResponse:
-      type: object
-      description: Response containing the count of products matching the filters.
-      properties:
-        count:
-          type: integer
-          description: Total count of products matching the filters.
-      example:
-        count: 100
     Product:
       type: object
       properties:
@@ -703,6 +503,196 @@ components:
         product_name: Acme Anvil
         status: CLASSIFICATION_COMPLETE
         upc: 03345678901234
+    BatchCreationResult:
+      type: object
+      properties:
+        batchId:
+          type: string
+          example: 8ec40e34-9f5f-478f-aefe-60f614d9be4c
+      description: Represents the unique synthetic identifier for a batch of uploaded products
+    ProductResponse:
+      type: object
+      description: Paginated response of products.
+      properties:
+        pagination:
+          type: object
+          description: Pagination details.
+          properties:
+            total:
+              type: integer
+              description: Total number of products matching the filters.
+            next_page_token:
+              type: string
+              description: Token to provide in the next request in order to fetch the next page of results
+            page_size:
+              type: integer
+              description: Number of products per page.
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+      example:
+        pagination:
+          total: 100
+          next_page_token: WyJoZWxsbyIsICJ3b3JsZCJd
+          page_size: 1
+        products:
+        - attested:
+            attested_by: supplier_who_attested
+            attested_timestamp: '2025-07-14T11:44:00.622Z'
+            is_attested: true
+          attributes:
+          - name: BRAND_NAME
+            value: ACME
+          - name: INGREDIENTS
+            value: water, oil, linalool, zinc
+          - name: MERCH_CLASS
+            value: FRAGRANCE
+          - name: MERCH_DEPARTMENT
+            value: WMNS FRAGRANCE
+          - name: SKU
+            value: '12345'
+          - name: external_id
+            value: '12345'
+          classifications:
+          - name: batt_cell_or_button_cell
+            value: ''
+          - name: battery_chemistry
+            value: ''
+          - name: battery_configuration
+            value: ''
+          - name: battery_used_for_running_equipment
+            value: ''
+          - name: contains_battery
+            value: false
+          - name: dot_basic_description
+            value: UN1266, PERFUMERY PRODUCTS, 3, II
+          - name: dot_exception_codes
+            value: 173.150(g) - Exception for flammable retail products containing ethyl alcohol - no markings required
+          - name: dot_hazard_class
+            value: '3'
+          - name: dot_least_burden
+            value: EXCEPTIONS APPLY
+          - name: dot_limited_quantity
+            value: true
+          - name: dot_packing_group
+            value: II
+          - name: dot_proper_shipping_name
+            value: PERFUMERY PRODUCTS
+          - name: dot_special_permit
+            value: ''
+          - name: dot_sub_hazard_class
+            value: N/A
+          - name: dot_technical_name
+            value: ''
+          - name: dot_un_number
+            value: UN1266
+          - name: flash_point
+            value: '65.3'
+          - name: flash_point_uom
+            value: F
+          - name: form
+            value: LIQUID
+          - name: iata_basic_description
+            value: UN1266, PERFUMERY PRODUCTS, 3, II
+          - name: iata_exception_codes
+            value: ID8000 - Eligible for ID8000 consumer commodities exception
+          - name: iata_hazard_class
+            value: '3'
+          - name: iata_least_burden
+            value: LIMITED QUANTITY
+          - name: iata_limited_quantity
+            value: true
+          - name: iata_packing_group
+            value: II
+          - name: iata_proper_shipping_name
+            value: PERFUMERY PRODUCTS
+          - name: iata_sub_hazard_class
+            value: N/A
+          - name: iata_technical_name
+            value: ''
+          - name: iata_un_number
+            value: UN1266
+          - name: ifc_codes
+            value: FLIB
+          - name: imdg_basic_description
+            value: UN1266, PERFUMERY PRODUCTS, 3, II
+          - name: imdg_exception_codes
+            value: ''
+          - name: imdg_hazard_class
+            value: '3'
+          - name: imdg_least_burden
+            value: LIMITED QUANTITY
+          - name: imdg_limited_quantity
+            value: true
+          - name: imdg_marine_pollutant
+            value: false
+          - name: imdg_packing_group
+            value: II
+          - name: imdg_proper_shipping_name
+            value: PERFUMERY PRODUCTS
+          - name: imdg_sub_hazard_class
+            value: N/A
+          - name: imdg_technical_name
+            value: ''
+          - name: imdg_un_number
+            value: UN1266
+          - name: is_multi_component
+            value: false
+          - name: lithium_metal_weight
+            value: ''
+          - name: lithium_metal_weight_uom
+            value: ''
+          - name: lithium_watt_hrs
+            value: ''
+          - name: nfpa_flammability
+            value: '3'
+          - name: nfpa_health
+            value: '2'
+          - name: nfpa_reactivity
+            value: '0'
+          - name: nfpa_special
+            value: ''
+          - name: ph_max
+            value: ''
+          - name: ph_min
+            value: ''
+          - name: product_itself_battery
+            value: false
+          - name: scopes
+            value: formulated
+          - name: sds_link
+            value: https://files.smartersorting.com/sds/view/identifier/filename.pdf
+          - name: size_uom
+            value: OZ
+          - name: total_number_of_batt_or_cells
+            value: ''
+          - name: un38.3_document_link
+            value: ''
+          - name: upc_size
+            value: '1.7'
+          - name: waste_rcra_codes
+            value: D001
+          - name: waste_state_codes
+            value: CA 331, WA WT02
+          - name: weight_of_all_batts
+            value: ''
+          - name: weight_of_all_batts_uom
+            value: ''
+          created_date: '2025-05-15T22:18:17.780Z'
+          last_updated_date: '2026-06-10T15:51:00.916Z'
+          product_name: Acme Anvil
+          status: CLASSIFICATION_COMPLETE
+          upc: 03345678901234
+    ProductCSVBatch:
+      type: string
+      example: 'upc,name,brand
+
+        72527273070,"Cleaning Product","Greater Brand"
+
+        ,"An Amazing Lip Gloss","Cleanest Brand"
+
+        123456789012,,'
     ProblemDetails:
       type: object
       description: Problem Details object as per RFC 7807.
@@ -724,6 +714,15 @@ components:
           type: string
           format: uri
           description: A URI reference that identifies the specific occurrence of the problem.
+    ProductCountResponse:
+      type: object
+      description: Response containing the count of products matching the filters.
+      properties:
+        count:
+          type: integer
+          description: Total count of products matching the filters.
+      example:
+        count: 100
     ProductAttributeOrClassification:
       type: object
       properties:
@@ -735,13 +734,6 @@ components:
           description: Can be of any type (string, number, object, etc.)
           example: alkaline
       description: Represents either an attribute of a product or a classification result with a name and a value
-    BatchCreationResult:
-      type: object
-      properties:
-        batchId:
-          type: string
-          example: 8ec40e34-9f5f-478f-aefe-60f614d9be4c
-      description: Represents the unique synthetic identifier for a batch of uploaded products
     ProductStatus:
       type: string
       enum:
@@ -752,6 +744,3 @@ components:
     api_key:
       type: http
       scheme: bearer
-x-refined-from:
-- smarter-sorting-customer-classification-v1-openapi.json
-- smarter-sorting-customer-classification-v1-openapi.yml
