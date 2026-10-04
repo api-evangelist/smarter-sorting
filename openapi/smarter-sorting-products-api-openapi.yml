@@ -328,6 +328,22 @@ paths:
       - api_key: []
 components:
   schemas:
+    ProductCountResponse:
+      type: object
+      description: Response containing the count of products matching the filters.
+      properties:
+        count:
+          type: integer
+          description: Total count of products matching the filters.
+      example:
+        count: 100
+    BatchCreationResult:
+      type: object
+      properties:
+        batchId:
+          type: string
+          example: 8ec40e34-9f5f-478f-aefe-60f614d9be4c
+      description: Represents the unique synthetic identifier for a batch of uploaded products
     Product:
       type: object
       properties:
@@ -503,22 +519,23 @@ components:
         product_name: Acme Anvil
         status: CLASSIFICATION_COMPLETE
         upc: 03345678901234
-    ProductCountResponse:
-      type: object
-      description: Response containing the count of products matching the filters.
-      properties:
-        count:
-          type: integer
-          description: Total count of products matching the filters.
-      example:
-        count: 100
-    BatchCreationResult:
+    ProductAttributeOrClassification:
       type: object
       properties:
-        batchId:
+        name:
           type: string
-          example: 8ec40e34-9f5f-478f-aefe-60f614d9be4c
-      description: Represents the unique synthetic identifier for a batch of uploaded products
+          example: battery_chemistry
+        value:
+          type: object
+          description: Can be of any type (string, number, object, etc.)
+          example: alkaline
+      description: Represents either an attribute of a product or a classification result with a name and a value
+    ProductStatus:
+      type: string
+      enum:
+      - PENDING
+      - CLASSIFICATION_COMPLETE
+      - IN_REVIEW
     ProductResponse:
       type: object
       description: Paginated response of products.
@@ -693,17 +710,15 @@ components:
           product_name: Acme Anvil
           status: CLASSIFICATION_COMPLETE
           upc: 03345678901234
-    ProductAttributeOrClassification:
-      type: object
-      properties:
-        name:
-          type: string
-          example: battery_chemistry
-        value:
-          type: object
-          description: Can be of any type (string, number, object, etc.)
-          example: alkaline
-      description: Represents either an attribute of a product or a classification result with a name and a value
+    ProductCSVBatch:
+      type: string
+      example: 'upc,name,brand
+
+        72527273070,"Cleaning Product","Greater Brand"
+
+        ,"An Amazing Lip Gloss","Cleanest Brand"
+
+        123456789012,,'
     ProblemDetails:
       type: object
       description: Problem Details object as per RFC 7807.
@@ -725,21 +740,6 @@ components:
           type: string
           format: uri
           description: A URI reference that identifies the specific occurrence of the problem.
-    ProductCSVBatch:
-      type: string
-      example: 'upc,name,brand
-
-        72527273070,"Cleaning Product","Greater Brand"
-
-        ,"An Amazing Lip Gloss","Cleanest Brand"
-
-        123456789012,,'
-    ProductStatus:
-      type: string
-      enum:
-      - PENDING
-      - CLASSIFICATION_COMPLETE
-      - IN_REVIEW
   securitySchemes:
     api_key:
       type: http
