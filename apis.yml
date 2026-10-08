@@ -165,6 +165,8 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: RateLimits
+  url: rate-limits/smarter-sorting-rate-limits.yml
 - type: CapabilityMap
   url: capabilities/smarter-sorting-capability-edges.yml
   name: Smarter Sorting Business Capability Map
