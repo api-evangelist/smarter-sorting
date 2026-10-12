@@ -1,0 +1,16 @@
+generated: '2026-10-12'
+method: none
+source:
+- https://zapier.com/apps/smarter-sorting/integrations
+- https://n8n.io/integrations/smarter-sorting/
+- https://composio.dev/toolkits/smarter-sorting
+- https://monid.ai/tools/smarter-sorting
+checked:
+- https://composio.dev/toolkits/smarter-sorting
+- https://monid.ai/tools/smarter-sorting
+- https://n8n.io/integrations/smarter-sorting/
+- https://zapier.com/apps/smarter-sorting/integrations
+summary: null
+marketplace_apps: []
+edges: []
+templates: []
